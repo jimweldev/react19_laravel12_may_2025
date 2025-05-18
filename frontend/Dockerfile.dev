@@ -1,0 +1,17 @@
+# Use Node.js version 23 Alpine as the base image
+FROM node:23-alpine
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy package.json and package-lock.json to the working directory
+COPY ./frontend/package*.json ./
+
+# Install all dependencies
+RUN npm install --force
+
+# Copy all files from the current directory to the working directory
+COPY . .
+
+# Command to run the development server
+CMD ["npm", "run", "dev"]
