@@ -5,6 +5,7 @@ import MainLayout from './_layouts/private/_components/main-layout';
 import SettingsLayout from './_layouts/private/_components/settings-layout';
 import PrivateLayout from './_layouts/private/private-layout';
 import PublicLayout from './_layouts/public/public-layout';
+import DashboardPage from './_pages/private/admin/dashboard/dashboard-page';
 import RbacPage from './_pages/private/admin/rbac/rbac-page';
 import UsersPage from './_pages/private/admin/users/users-page';
 import DatePickerPage from './_pages/private/examples/forms/date-picker-page';
@@ -37,7 +38,7 @@ const App = () => {
                       children: [
                         {
                           path: '',
-                          element: <h1>admin</h1>,
+                          element: <DashboardPage />,
                         },
                         {
                           path: 'users',

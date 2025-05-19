@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RbacPermissionController;
 use App\Http\Controllers\RbacRoleController;
 use App\Http\Controllers\SelectController;
@@ -20,6 +21,10 @@ Route::middleware('check.token')->group(function () {
     Route::patch('/users/{id}/change-password', [UserController::class, 'changePassword']);
     Route::patch('/users/{id}/profile', [UserController::class, 'updateProfile']);
     Route::post('/users/{id}/profile/avatar', [UserController::class, 'updateProfileAvatar']);
+
+    // DASHBOARD
+    Route::get('/dashboard/admins', [DashboardController::class, 'getDashboardAdmins']);
+    Route::get('/dashboard/account-types', [DashboardController::class, 'getDashboardAccountTypes']);
 
     // user roles
     Route::get('/users/{id}/user-roles', [UserController::class, 'getUserRoles']);

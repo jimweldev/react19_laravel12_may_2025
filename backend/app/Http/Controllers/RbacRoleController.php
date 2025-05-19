@@ -36,7 +36,7 @@ class RbacRoleController extends Controller {
                 ->with(['rbac_permission' => function ($query) {
                     $query->select('id', 'label');
                 }]);
-            }
+        },
         ]);
 
         $record = $record->first();
