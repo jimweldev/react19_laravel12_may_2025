@@ -125,7 +125,7 @@ const CreatePermission = ({
                     <FormItem className="col-span-12">
                       <FormLabel>Label</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="Create Users" />
+                        <Input {...field} placeholder="Create User" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -139,7 +139,7 @@ const CreatePermission = ({
                     <FormItem className="col-span-12">
                       <FormLabel>Value</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="create-users" readOnly />
+                        <Input {...field} placeholder="create-user" readOnly />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

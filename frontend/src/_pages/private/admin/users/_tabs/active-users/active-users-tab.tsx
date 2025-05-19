@@ -69,7 +69,7 @@ const ActiveUsersTab = () => {
       {/* filter */}
       <ToolTip content="Filter">
         <Button
-          variant="warning"
+          variant={queryFilter ? 'success' : 'outline'}
           size="sm"
           onClick={() => {
             setOpenFilterUsers(true);

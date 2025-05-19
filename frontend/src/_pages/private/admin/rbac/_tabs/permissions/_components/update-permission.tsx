@@ -31,9 +31,6 @@ import { mainInstance } from '@/instances/main-instance';
 
 // form - form validation
 const FormSchema = z.object({
-  module: z.string().min(1, {
-    message: 'Required',
-  }),
   label: z.string().min(1, {
     message: 'Required',
   }),
@@ -83,7 +80,6 @@ const UpdatePermission = ({
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      module: '',
       label: '',
       value: '',
     },
@@ -108,7 +104,6 @@ const UpdatePermission = ({
   useEffect(() => {
     if (rbacPermission) {
       form.reset({
-        module: rbacPermission.rbac_module?.label || '',
         label: rbacPermission.label || '',
         value: rbacPermission.value || '',
       });
@@ -184,20 +179,6 @@ const UpdatePermission = ({
                   <ErrorDialog error={error} />
                 ) : (
                   <div className="grid grid-cols-12 gap-3">
-                    {/* module input */}
-                    <FormField
-                      control={form.control}
-                      name="module"
-                      render={({ field }) => (
-                        <FormItem className="col-span-12">
-                          <FormLabel>Module</FormLabel>
-                          <FormControl>
-                            <Input {...field} readOnly />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                     {/* label input */}
                     <FormField
                       control={form.control}
@@ -206,7 +187,7 @@ const UpdatePermission = ({
                         <FormItem className="col-span-12">
                           <FormLabel>Label</FormLabel>
                           <FormControl>
-                            <Input {...field} />
+                            <Input {...field} placeholder="Create User" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -220,7 +201,11 @@ const UpdatePermission = ({
                         <FormItem className="col-span-12">
                           <FormLabel>Value</FormLabel>
                           <FormControl>
-                            <Input {...field} readOnly />
+                            <Input
+                              {...field}
+                              placeholder="create-user"
+                              readOnly
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

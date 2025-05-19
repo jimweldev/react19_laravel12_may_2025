@@ -142,7 +142,7 @@ const CreateRole = ({ open, setOpen, refetch }: CreateRoleProps) => {
                     <FormItem className="col-span-12">
                       <FormLabel>Label</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} placeholder="Manager" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -156,7 +156,7 @@ const CreateRole = ({ open, setOpen, refetch }: CreateRoleProps) => {
                     <FormItem className="col-span-12">
                       <FormLabel>Value</FormLabel>
                       <FormControl>
-                        <Input {...field} readOnly />
+                        <Input {...field} placeholder="manager" readOnly />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
