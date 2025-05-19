@@ -15,11 +15,11 @@ class DatabaseSeeder extends Seeder {
         // User::factory(10)->create();
 
         User::factory()->create([
-            'first_name' => 'Admin',
+            'first_name' => 'Connext',
             'middle_name' => null,
             'last_name' => 'Admin',
             'suffix' => null,
-            'email' => 'yato.rend18@gmail.com',
+            'email' => 'admin@connextglobal.com',
             'is_admin' => true,
             'password' => Hash::make('P@ssword123!'),
         ]);
