@@ -279,6 +279,7 @@ const ActiveUsersTab = () => {
         columns={columns}
         open={openFilterUsers}
         setOpen={setOpenFilterUsers}
+        setCurrentPage={usersPagination.setCurrentPage}
       />
     </>
   );

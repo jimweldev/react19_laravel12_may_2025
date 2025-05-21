@@ -61,7 +61,10 @@ const AppRightSidebar = ({
               </TabsTrigger>
             </TabsList>
           </SheetHeader>
-          <TabsContent value="Notifications">
+          <TabsContent
+            className="flex flex-col overflow-y-hidden"
+            value="Notifications"
+          >
             <div className="border-t border-b p-2">
               <h4 className="text-muted-foreground flex items-center gap-2 text-sm font-semibold">
                 <FaRegBell />
@@ -462,7 +465,10 @@ const AppRightSidebar = ({
               </Link>
             </div>
           </TabsContent>
-          <TabsContent value="Messages">
+          <TabsContent
+            className="flex flex-col overflow-y-hidden"
+            value="Messages"
+          >
             <div className="border-t border-b p-2">
               <h4 className="text-muted-foreground flex items-center gap-2 text-sm font-semibold">
                 <FaRegMessage />

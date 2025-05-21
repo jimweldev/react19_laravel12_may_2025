@@ -27,6 +27,7 @@ type DataTableFilterProps = {
   columns: Column[];
   open: boolean;
   setOpen: (open: boolean) => void;
+  setCurrentPage: (page: number) => void;
   title?: string;
 };
 
@@ -149,6 +150,7 @@ const DataTableFilter = ({
   columns,
   open,
   setOpen,
+  setCurrentPage,
   title = 'Filter Records',
 }: DataTableFilterProps) => {
   const [filters, setFilters] = useState<Filter[]>([]);
@@ -179,6 +181,7 @@ const DataTableFilter = ({
   };
 
   const applyFilters = () => {
+    setCurrentPage(1);
     setQueryFilter(filtersToQueryString(filters));
   };
 
