@@ -466,8 +466,8 @@ const AppRightSidebar = ({
             </div>
           </TabsContent>
           <TabsContent
-            className="flex flex-col overflow-y-hidden"
             value="Messages"
+            className="flex flex-col overflow-y-hidden"
           >
             <div className="border-t border-b p-2">
               <h4 className="text-muted-foreground flex items-center gap-2 text-sm font-semibold">
