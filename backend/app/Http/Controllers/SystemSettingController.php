@@ -6,8 +6,7 @@ use App\Helpers\QueryHelper;
 use App\Models\SystemSetting;
 use Illuminate\Http\Request;
 
-class SystemSettingController extends Controller
-{
+class SystemSettingController extends Controller {
     public function index(Request $request) {
         $queryParams = $request->all();
 

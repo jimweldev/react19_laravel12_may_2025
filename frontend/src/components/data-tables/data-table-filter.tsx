@@ -159,8 +159,18 @@ const DataTableFilter = ({
 
   const updateFilter = (i: number, key: keyof Filter, val: Filter['value']) => {
     setFilters(prev => {
+      const prevCol = prev[i].column;
       const next = [...prev];
       next[i] = { ...next[i], [key]: val };
+      const nextCol = next[i].column;
+
+      if (prevCol !== nextCol) {
+        next[i] = {
+          ...next[i],
+          value: null,
+        };
+      }
+
       return next;
     });
   };
@@ -199,7 +209,7 @@ const DataTableFilter = ({
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription>
-              Fill in the details below to filter records.
+              Use the form below to filter records
             </DialogDescription>
           </DialogHeader>
 

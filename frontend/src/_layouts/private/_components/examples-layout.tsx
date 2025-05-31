@@ -1,12 +1,6 @@
 import { BsInputCursor } from 'react-icons/bs';
 import { FaCaretSquareDown } from 'react-icons/fa';
-import {
-  FaBoxOpen,
-  FaCalendarDay,
-  FaChevronDown,
-  FaKeyboard,
-  FaTable,
-} from 'react-icons/fa6';
+import { FaBoxOpen, FaChevronDown, FaKeyboard, FaTable } from 'react-icons/fa6';
 import { type SidebarGroup } from '@/templates/main/_components/app-sidebar';
 import MainTemplate from '@/templates/main/main-template';
 

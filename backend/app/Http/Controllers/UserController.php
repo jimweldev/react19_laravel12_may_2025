@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Helpers\QueryHelper;
 use App\Helpers\UserHelper;
-use App\Models\RbacUserRole;
 use App\Models\User;
+use App\Models\UserSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -174,7 +174,7 @@ class UserController extends Controller {
                         ->orWhere('middle_name', 'LIKE', '%'.$search.'%')
                         ->orWhere('last_name', 'LIKE', '%'.$search.'%')
                         ->orWhere('suffix', 'LIKE', '%'.$search.'%')
-                        ->orWhereHas('rbac_user_roles.rbac_role', function($query) use ($search) {
+                        ->orWhereHas('rbac_user_roles.rbac_role', function ($query) use ($search) {
                             $query->where('label', 'LIKE', '%'.$search.'%');
                         });
                 });
@@ -474,6 +474,33 @@ class UserController extends Controller {
                 'avatar' => $avatarName,
                 'message' => 'Avatar updated successfully!',
             ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred.',
+                'error' => $e->getMessage(),
+            ], 400);
+        }
+    }
+
+    public function updateUserSettings(Request $request) {
+        $authUser = $request->user();
+
+        try {
+            $userSetting = UserSetting::where('user_id', $authUser->id)
+                ->first();
+
+            if (!$userSetting) {
+                // create user setting
+                // add user_id to request
+                $request->merge(['user_id' => $authUser->id]);
+                $userSetting = UserSetting::create($request->all());
+            } else {
+                $userSetting->update($request->all());
+            }
+
+            $user = UserHelper::getUser($authUser->email);
+
+            return response()->json($user);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'An error occurred.',

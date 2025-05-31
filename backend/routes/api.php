@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CatController;
 use App\Http\Controllers\DashboardController;
@@ -9,6 +8,7 @@ use App\Http\Controllers\RbacRoleController;
 use App\Http\Controllers\SelectController;
 use App\Http\Controllers\SystemGlobalDropdownController;
 use App\Http\Controllers\SystemSettingController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/auth/login', [AuthController::class, 'loginWithEmail']);
@@ -24,6 +24,7 @@ Route::middleware('check.token')->group(function () {
     Route::patch('/users/{id}/change-password', [UserController::class, 'changePassword']);
     Route::patch('/users/{id}/profile', [UserController::class, 'updateProfile']);
     Route::post('/users/{id}/profile/avatar', [UserController::class, 'updateProfileAvatar']);
+    Route::patch('/users/settings', [UserController::class, 'updateUserSettings']);
 
     // DASHBOARD
     Route::get('/dashboard/admins', [DashboardController::class, 'getDashboardAdmins']);
@@ -31,9 +32,7 @@ Route::middleware('check.token')->group(function () {
 
     // user roles
     Route::get('/users/{id}/user-roles', [UserController::class, 'getUserRoles']);
-    // Route::post('/users/{id}/user-roles', [UserController::class, 'addUserRoles']);
     Route::patch('/users/{id}/user-roles', [UserController::class, 'updateUserRoles']);
-    // Route::delete('/users/{id}/user-roles', [UserController::class, 'deleteUserRoles']);
 
     // archived users
     Route::get('/users/{id}/archived', [UserController::class, 'getArchivedUser']);

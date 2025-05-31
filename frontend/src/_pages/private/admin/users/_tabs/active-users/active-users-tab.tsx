@@ -19,13 +19,6 @@ import ToolTip from '@/components/tool-tips/tool-tip';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { TableCell, TableRow } from '@/components/ui/table';
 import usePagination from '@/hooks/use-pagination';
 import { formatName } from '@/lib/format-name';
@@ -145,21 +138,27 @@ const ActiveUsersTab = () => {
       ),
     },
     {
-      label: 'Role',
-      column: 'rbac_role.label',
+      label: 'Middle Name',
+      column: 'middle_name',
       element: (value, onChange) => (
-        <Select
+        <Input
+          className="w-full"
+          placeholder="Enter Middle Name"
           value={typeof value === 'string' ? value : ''}
-          onValueChange={v => onChange(v)}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select Role" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Manager">Manager</SelectItem>
-            <SelectItem value="Hatdog">Hatdog</SelectItem>
-          </SelectContent>
-        </Select>
+          onChange={e => onChange(e.target.value)}
+        />
+      ),
+    },
+    {
+      label: 'Last Name',
+      column: 'last_name',
+      element: (value, onChange) => (
+        <Input
+          className="w-full"
+          placeholder="Enter Last Name"
+          value={typeof value === 'string' ? value : ''}
+          onChange={e => onChange(e.target.value)}
+        />
       ),
     },
   ];

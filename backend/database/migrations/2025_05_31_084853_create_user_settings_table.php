@@ -9,11 +9,14 @@ return new class extends Migration {
      * Run the migrations.
      */
     public function up(): void {
-        Schema::create('system_global_dropdowns', function (Blueprint $table) {
+        Schema::create('user_settings', function (Blueprint $table) {
             $table->id();
-            $table->string('label')->index();
-            $table->string('module')->index();
-            $table->string('type')->index();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('theme')->default('light');
+            $table->string('font_size')->default('1rem');
+            $table->string('timezone')->nullable();
+            $table->string('date_format')->default('YYYY-MM-DD');
+            $table->string('time_format')->default('HH:mm:ss');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
@@ -23,6 +26,6 @@ return new class extends Migration {
      * Reverse the migrations.
      */
     public function down(): void {
-        Schema::dropIfExists('system_global_dropdowns');
+        Schema::dropIfExists('user_settings');
     }
 };

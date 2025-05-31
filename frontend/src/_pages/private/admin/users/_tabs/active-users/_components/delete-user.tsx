@@ -113,7 +113,7 @@ const DeleteUser = ({
                     {/* title */}
                     <h3 className="text-center text-xl">Archive User</h3>
                     {/* description */}
-                    <p className="mb-2 text-center text-slate-600">
+                    <p className="text-muted-foreground mb-2 text-center">
                       Are you sure you want to archive this record?
                     </p>
                     {/* user name */}

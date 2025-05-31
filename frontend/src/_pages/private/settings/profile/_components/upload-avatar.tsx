@@ -116,7 +116,7 @@ const UploadAvatar = ({ open, setOpen }: UploadAvatarProps) => {
         onRemoveImage();
       }}
     >
-      <DialogContent onOpenAutoFocus={e => e.preventDefault()}>
+      <DialogContent>
         {/* upload form */}
         <form onSubmit={onSubmit}>
           <DialogHeader>

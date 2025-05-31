@@ -4,8 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SystemSetting extends Model
-{
+class SystemSetting extends Model {
     protected $guarded = [
         'id',
         'created_at',

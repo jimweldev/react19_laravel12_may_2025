@@ -213,10 +213,6 @@ html {
   @apply bg-muted text-muted-foreground cursor-default;
 }
 
-.pagination li a {
-  /* @apply p-4; */
-}
-
 .pagination.pagination-sm li a {
   @apply flex min-h-8 min-w-8 items-center px-2 align-middle;
 }
@@ -228,6 +224,10 @@ html {
 
 .react-select__single-value {
   @apply !text-card-foreground;
+}
+
+.react-select__input-container {
+  @apply !text-foreground;
 }
 
 .react-select__control {
@@ -292,6 +292,16 @@ html {
 .quill.invalid .ql-toolbar,
 .quill.invalid .ql-container {
   @apply !border-destructive;
+}
+
+.ql-toolbar,
+.ql-toolbar * {
+  @apply dark:!text-muted-foreground dark:!stroke-muted-foreground;
+}
+
+.ql-toolbar,
+.ql-toolbar .ql-active * {
+  @apply dark:!text-foreground dark:!stroke-foreground;
 }
 
 .react-quill-content strong {

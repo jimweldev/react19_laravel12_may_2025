@@ -6,8 +6,7 @@ use App\Helpers\QueryHelper;
 use App\Models\SystemGlobalDropdown;
 use Illuminate\Http\Request;
 
-class SystemGlobalDropdownController extends Controller
-{
+class SystemGlobalDropdownController extends Controller {
     public function index(Request $request) {
         $queryParams = $request->all();
 

@@ -59,7 +59,7 @@ class QueryHelper {
         foreach ($conditions as $operator => $value) {
             if (isset($operators[$operator])) {
                 if ($operator === 'like') {
-                    $value = '%' . $value . '%';
+                    $value = '%'.$value.'%';
                 }
                 $query->where($key, $operators[$operator], $value);
             } else {

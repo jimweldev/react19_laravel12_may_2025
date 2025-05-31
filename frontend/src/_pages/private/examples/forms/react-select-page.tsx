@@ -5,6 +5,7 @@ import { z } from 'zod';
 import CodePreview from '@/components/code/code-preview';
 import UsersSelect from '@/components/react-select/users-select';
 import PageHeader from '@/components/typography/page-header';
+import PageSubHeader from '@/components/typography/page-sub-header';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -238,7 +239,7 @@ export default ReactSelectPage;
     <>
       <PageHeader className="mb-3">React Select</PageHeader>
 
-      <h5 className="text-medium mb-1 font-semibold">Single</h5>
+      <PageSubHeader className="mb-1">Single</PageSubHeader>
       <CodePreview
         className="mb-6"
         code={codeStringSingle}
@@ -277,7 +278,7 @@ export default ReactSelectPage;
         </Form>
       </CodePreview>
 
-      <h5 className="text-medium mb-1 font-semibold">Multiple</h5>
+      <PageSubHeader className="mb-1">Multiple</PageSubHeader>
       <CodePreview
         code={codeStringMultiple}
         lineNumbers={[

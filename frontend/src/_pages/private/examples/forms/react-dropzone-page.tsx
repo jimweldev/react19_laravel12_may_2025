@@ -3,6 +3,7 @@ import { type FileRejection } from 'react-dropzone';
 import CodePreview from '@/components/code/code-preview';
 import FileDropzone from '@/components/file-dropzones/file-dropzone';
 import PageHeader from '@/components/typography/page-header';
+import PageSubHeader from '@/components/typography/page-sub-header';
 import { handleFileRejections } from '@/lib/handle-file-rejections';
 
 const ReactDropzonePage = () => {
@@ -69,7 +70,7 @@ export default ReactDropzonePage;
     <>
       <PageHeader className="mb-3">React Dropzone</PageHeader>
 
-      <h5 className="text-medium mb-1 font-semibold">Single</h5>
+      <PageSubHeader className="mb-1">Single</PageSubHeader>
       <CodePreview
         className="mb-6"
         code={codeStringSingle}
@@ -85,7 +86,7 @@ export default ReactDropzonePage;
         />
       </CodePreview>
 
-      <h5 className="text-medium mb-1 font-semibold">Multiple</h5>
+      <PageSubHeader className="mb-1">Multiple</PageSubHeader>
       <CodePreview
         code={codeStringMultiple}
         lineNumbers={[

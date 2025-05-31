@@ -31,6 +31,10 @@ class User extends Authenticatable implements JWTSubject {
         return $this->belongsToMany(RbacRole::class, 'rbac_user_roles', 'user_id', 'rbac_role_id');
     }
 
+    public function user_setting() {
+        return $this->hasOne(UserSetting::class, 'user_id', 'id');
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

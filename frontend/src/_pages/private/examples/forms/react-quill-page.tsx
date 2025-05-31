@@ -5,6 +5,7 @@ import { z } from 'zod';
 import CodePreview from '@/components/code/code-preview';
 import ReactQuillEditor from '@/components/editor/react-quill-editor';
 import PageHeader from '@/components/typography/page-header';
+import PageSubHeader from '@/components/typography/page-sub-header';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -207,7 +208,7 @@ export default ReactQuillPage;
     <>
       <PageHeader className="mb-3">React Quill</PageHeader>
 
-      <h5 className="text-medium mb-1 font-semibold">Full</h5>
+      <PageSubHeader className="mb-1">Full</PageSubHeader>
       <CodePreview
         className="mb-6"
         code={codeStringFull}
@@ -244,7 +245,7 @@ export default ReactQuillPage;
         </Form>
       </CodePreview>
 
-      <h5 className="text-medium mb-1 font-semibold">Simple</h5>
+      <PageSubHeader className="mb-1">Simple</PageSubHeader>
       <CodePreview
         className="mb-6"
         code={codeStringSimple}

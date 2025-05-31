@@ -1,21 +1,17 @@
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Check, ChevronDown } from 'lucide-react';
+import moment from 'moment-timezone';
 import { useForm } from 'react-hook-form';
+import ReactSelect from 'react-select';
+import { toast } from 'sonner';
 import { z } from 'zod';
+import useAuthUserStore from '@/_stores/auth-user-store';
 import useFontSizeStore from '@/_stores/font-size-store';
 import useThemeStore from '@/_stores/theme-store';
+import useTimezoneStore from '@/_stores/timezone-store';
 import PageHeader from '@/components/typography/page-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardBody, CardFooter } from '@/components/ui/card';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command';
 import {
   Form,
   FormControl,
@@ -25,11 +21,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Label } from '@/components/ui/label';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
   Select,
@@ -39,22 +30,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { cn } from '@/lib/utils';
+import { mainInstance } from '@/instances/main-instance';
 
-const timezones = [
-  {
-    value: 'Asia/Manila',
-    label: 'Asia/Manila',
-  },
-  {
-    value: 'Asia/Hong_Kong',
-    label: 'Asia/Hong_Kong',
-  },
-  {
-    value: 'Asia/Tokyo',
-    label: 'Asia/Tokyo',
-  },
-];
+const timezones = moment.tz.names().map(tz => ({ label: tz, value: tz }));
 
 const FormSchema = z.object({
   theme: z.enum(['light', 'dark', 'system'], {
@@ -63,30 +41,80 @@ const FormSchema = z.object({
   font_size: z.string().min(1, {
     message: 'Required',
   }),
-  timezone: z.string().min(1, {
+  timezone: z.object({
+    label: z.string().min(1, {
+      message: 'Required',
+    }),
+    value: z.string().min(1, {
+      message: 'Required',
+    }),
+  }),
+  date_format: z.string().min(1, {
+    message: 'Required',
+  }),
+  time_format: z.string().min(1, {
     message: 'Required',
   }),
 });
 
 const GeneralPage = () => {
+  const { setUser } = useAuthUserStore();
   const { theme, setTheme } = useThemeStore();
   const { fontSize, setFontSize } = useFontSizeStore();
-
-  const [open, setOpen] = useState(false);
+  const {
+    timezone,
+    date_format,
+    time_format,
+    setTimezone,
+    setDateFormat,
+    setTimeFormat,
+  } = useTimezoneStore();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      theme: theme,
-      font_size: fontSize,
-      timezone: 'Asia/Manila',
+      theme: theme || 'light',
+      font_size: fontSize || '1rem',
+      timezone: timezone
+        ? timezones.find(tz => tz.value === timezone)
+        : undefined,
+      date_format: date_format || 'YYYY-MM-DD',
+      time_format: time_format || 'HH:mm:ss',
     },
   });
 
+  // form - state
+  const [isLoadingUpdateProfile, setIsLoadingUpdateProfile] =
+    useState<boolean>(false);
+
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    // Add save logic here
-    setTheme(data.theme);
-    setFontSize(data.font_size);
+    const newData = { ...data, timezone: data.timezone?.value };
+
+    setIsLoadingUpdateProfile(true);
+
+    toast.promise(mainInstance.patch(`/api/users/settings`, newData), {
+      loading: 'Loading...',
+      success: response => {
+        setUser(response.data);
+
+        // Add save logic here
+        setTheme(response.data.user_setting.theme);
+        setFontSize(response.data.user_setting.font_size);
+        setTimezone(response.data.user_setting.timezone);
+        setDateFormat(response.data.user_setting.date_format);
+        setTimeFormat(response.data.user_setting.time_format);
+
+        return 'Success!';
+      },
+      error: error => {
+        return (
+          error.response?.data?.message || error.message || 'An error occurred'
+        );
+      },
+      finally: () => {
+        setIsLoadingUpdateProfile(false);
+      },
+    });
   };
 
   return (
@@ -162,56 +190,79 @@ const GeneralPage = () => {
                 <FormField
                   control={form.control}
                   name="timezone"
-                  render={({ field }) => (
+                  render={({ field, fieldState }) => (
                     <FormItem className="col-span-12">
                       <FormLabel>Timezone</FormLabel>
-                      <Popover open={open} onOpenChange={setOpen}>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              role="combobox"
-                              className="flex w-full items-center justify-between gap-2 !bg-transparent px-3 py-2 text-sm font-normal whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none"
-                            >
-                              {field.value ?? 'Select timezone...'}
-                              <ChevronDown className="size-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="p-0">
-                          <Command>
-                            <CommandInput
-                              placeholder="Search timezone..."
-                              className="h-9"
-                            />
-                            <CommandList>
-                              <CommandEmpty>No framework found.</CommandEmpty>
-                              <CommandGroup>
-                                {timezones.map(timezone => (
-                                  <CommandItem
-                                    key={timezone.value}
-                                    value={timezone.value}
-                                    onSelect={currentValue => {
-                                      field.onChange(currentValue);
-                                      setOpen(false);
-                                    }}
-                                  >
-                                    {timezone.label}
-                                    <Check
-                                      className={cn(
-                                        'ml-auto',
-                                        field.value === timezone.value
-                                          ? 'opacity-100'
-                                          : 'opacity-0',
-                                      )}
-                                    />
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
+                      <ReactSelect
+                        classNamePrefix="react-select"
+                        className={`react-select-container ${fieldState.invalid ? 'invalid' : ''}`}
+                        placeholder="Select timezone"
+                        value={field.value}
+                        onChange={field.onChange}
+                        options={timezones}
+                      />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Date Format */}
+                <FormField
+                  control={form.control}
+                  name="date_format"
+                  render={({ field }) => (
+                    <FormItem className="col-span-6">
+                      <FormLabel>Date Format</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select date format" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem value="YYYY-MM-DD">
+                              YYYY-MM-DD
+                            </SelectItem>
+                            <SelectItem value="MM/DD/YYYY">
+                              MM/DD/YYYY
+                            </SelectItem>
+                            <SelectItem value="DD/MM/YYYY">
+                              DD/MM/YYYY
+                            </SelectItem>
+                            <SelectItem value="MMM DD, YYYY">
+                              MMM DD, YYYY
+                            </SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Time Format */}
+                <FormField
+                  control={form.control}
+                  name="time_format"
+                  render={({ field }) => (
+                    <FormItem className="col-span-6">
+                      <FormLabel>Time Format</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select time format" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem value="hh:mm:ss A">12 Hour</SelectItem>
+                            <SelectItem value="HH:mm:ss">24 Hour</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -219,7 +270,9 @@ const GeneralPage = () => {
               </div>
             </CardBody>
             <CardFooter className="flex justify-end">
-              <Button type="submit">Save</Button>
+              <Button type="submit" disabled={isLoadingUpdateProfile}>
+                Save
+              </Button>
             </CardFooter>
           </Card>
         </form>

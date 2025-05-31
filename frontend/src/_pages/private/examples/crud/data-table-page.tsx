@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardBody } from '@/components/ui/card';
 import { TableCell, TableRow } from '@/components/ui/table';
 import usePagination from '@/hooks/use-pagination';
+import { getDateTimezone } from '@/lib/get-date-timezone';
 import CreateCat from './_components/create-cat';
 import DeleteCat from './_components/delete-cat';
 import UpdateCat from './_components/update-cat';
@@ -52,6 +53,10 @@ const DataTablePage = () => {
       column: 'name',
     },
     {
+      label: 'Date Created',
+      column: 'created_at',
+    },
+    {
       label: 'Actions',
     },
   ];
@@ -76,8 +81,13 @@ const DataTablePage = () => {
                     {/* id */}
                     <TableCell>{cat.id}</TableCell>
 
-                    {/* label */}
+                    {/* name */}
                     <TableCell>{cat.name}</TableCell>
+
+                    {/* date created */}
+                    <TableCell className="font-mono text-xs">
+                      {getDateTimezone(cat.created_at || '', 'date_time')}
+                    </TableCell>
 
                     {/* actions */}
                     <TableCell>
