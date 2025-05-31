@@ -62,7 +62,7 @@ const PasswordPage = () => {
         success: () => {
           // reset
           form.reset();
-          return 'Password changed successfully';
+          return 'Success!';
         },
         error: error => {
           return (

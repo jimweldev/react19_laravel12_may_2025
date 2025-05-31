@@ -70,7 +70,7 @@ const RestoreUser = ({
           // reset
           setOpen(false);
           setSelectedItem(null);
-          return 'User restored successfully';
+          return 'Success!';
         },
         error: error => {
           return (
@@ -120,7 +120,7 @@ const RestoreUser = ({
                     <h3 className="text-center text-xl">Restore User</h3>
                     {/* description */}
                     <p className="mb-2 text-center text-slate-600">
-                      Are you sure you want to restore this user?
+                      Are you sure you want to restore this record?
                     </p>
                     {/* user name */}
                     <h2 className="text-center text-2xl font-semibold">

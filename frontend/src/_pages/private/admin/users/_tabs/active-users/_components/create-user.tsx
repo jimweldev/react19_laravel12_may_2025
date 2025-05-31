@@ -97,7 +97,7 @@ const CreateUser = ({ open, setOpen, refetch }: CreateUserProps) => {
           is_admin: '0',
           account_type: 'Main',
         });
-        return 'User created successfully';
+        return 'Success!';
       },
       error: error => {
         return (

@@ -65,7 +65,7 @@ const UpdateUserRoles = ({
   refetch,
 }: UpdateUserRolesProps) => {
   const title = 'Update User Roles';
-  const description = 'Update user roles';
+  const description = 'Modify the details of an existing record';
 
   // QUERY
   // query - use query hook
@@ -74,7 +74,7 @@ const UpdateUserRoles = ({
     isFetching,
     error,
   } = useQuery<User>({
-    queryKey: ['users', 'update-user-roles', selectedItem?.id],
+    queryKey: ['users', 'update', 'user-roles', selectedItem?.id],
     queryFn: async ({ signal }): Promise<User> => {
       const res = await mainInstance.get(
         `/api/users/${selectedItem?.id}/user-roles`,
@@ -128,7 +128,7 @@ const UpdateUserRoles = ({
         success: () => {
           // refetch
           refetch();
-          return 'Role updated successfully';
+          return 'Success!';
         },
         error: error => {
           return (

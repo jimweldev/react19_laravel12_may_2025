@@ -39,7 +39,7 @@ const DeleteSetting = ({
     isFetching,
     error,
   } = useQuery<SystemSetting>({
-    queryKey: ['system/settings', 'delete-setting', selectedItem?.id],
+    queryKey: ['system/settings', 'delete', selectedItem?.id],
     queryFn: async ({ signal }): Promise<SystemSetting> => {
       const res = await mainInstance.get(
         `/api/system/settings/${selectedItem?.id}`,
@@ -70,7 +70,7 @@ const DeleteSetting = ({
           // reset
           setSelectedItem(null);
           setOpen(false);
-          return 'Setting deleted successfully';
+          return 'Success!';
         },
         error: error => {
           return (
@@ -120,7 +120,7 @@ const DeleteSetting = ({
                     <h3 className="text-center text-xl">Delete Setting</h3>
                     {/* description */}
                     <p className="mb-2 text-center text-slate-600">
-                      Are you sure you want to delete this setting?
+                      Are you sure you want to delete this record?
                     </p>
                     {/* setting name */}
                     <h2 className="text-center text-2xl font-semibold">

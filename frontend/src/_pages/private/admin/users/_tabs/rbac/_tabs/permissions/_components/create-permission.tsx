@@ -72,25 +72,16 @@ const CreatePermission = ({
 
   // form - submit
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    const newData = {
-      ...data,
-    };
-
-    // remove module from payload
-    if ('module' in newData) {
-      delete (newData as { module?: unknown }).module;
-    }
-
     setIsLoadingCreateItem(true);
 
-    toast.promise(mainInstance.post(`/api/rbac/permissions`, newData), {
+    toast.promise(mainInstance.post(`/api/rbac/permissions`, data), {
       loading: 'Loading...',
       success: () => {
         // refetch
         refetch();
         // reset
         form.reset();
-        return 'Permission created successfully';
+        return 'Success!';
       },
       error: error => {
         return (
@@ -112,7 +103,7 @@ const CreatePermission = ({
             <DialogHeader>
               <DialogTitle>Create Permission</DialogTitle>
               <DialogDescription>
-                Please fill in the form below to create a new permission.
+                Please fill in the form below to create a new record
               </DialogDescription>
             </DialogHeader>
             <DialogBody>

@@ -70,7 +70,7 @@ const UpdateRole = ({
   refetch,
 }: UpdateRoleProps) => {
   const title = 'Update Role';
-  const description = 'Update a role';
+  const description = 'Modify the details of an existing record';
 
   // QUERY
   // query - use query hook
@@ -79,7 +79,7 @@ const UpdateRole = ({
     isFetching,
     error,
   } = useQuery<RbacRole>({
-    queryKey: ['users', 'update-role', selectedItem?.id],
+    queryKey: ['rbac/roles', 'update', selectedItem?.id],
     queryFn: async ({ signal }): Promise<RbacRole> => {
       const res = await mainInstance.get(
         `/api/rbac/roles/${selectedItem?.id}`,
@@ -155,7 +155,7 @@ const UpdateRole = ({
         success: () => {
           // refetch
           refetch();
-          return 'Role updated successfully';
+          return 'Success!';
         },
         error: error => {
           return (

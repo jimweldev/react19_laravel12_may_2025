@@ -57,7 +57,7 @@ const UpdateSetting = ({
   refetch,
 }: UpdateSettingProps) => {
   const title = 'Update Setting';
-  const description = 'Update setting details';
+  const description = 'Modify the details of an existing record';
 
   // QUERY
   // query - use query hook
@@ -104,25 +104,16 @@ const UpdateSetting = ({
 
   // form - submit
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    const newData = {
-      ...data,
-    };
-
-    // remove module from payload
-    if ('module' in newData) {
-      delete (newData as { module?: unknown }).module;
-    }
-
     setIsLoadingUpdateItem(true);
 
     toast.promise(
-      mainInstance.patch(`/api/system/settings/${selectedItem?.id}`, newData),
+      mainInstance.patch(`/api/system/settings/${selectedItem?.id}`, data),
       {
         loading: 'Loading...',
         success: () => {
           // refetch
           refetch();
-          return 'Setting updated successfully';
+          return 'Success!';
         },
         error: error => {
           return (

@@ -22,35 +22,28 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { mainInstance } from '@/instances/main-instance';
 
 // form - form validation
 const FormSchema = z.object({
-  label: z.string().min(1, {
+  name: z.string().min(1, {
     message: 'Required',
   }),
-  value: z.string().min(1, {
-    message: 'Required',
-  }),
-  notes: z.string(),
 });
 
-type CreateSettingProps = {
+type CreateCatProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   refetch: () => void;
 };
 
-const CreateSetting = ({ open, setOpen, refetch }: CreateSettingProps) => {
+const CreateCat = ({ open, setOpen, refetch }: CreateCatProps) => {
   // FORM
   // form - use form hook
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      label: '',
-      value: '',
-      notes: '',
+      name: '',
     },
   });
 
@@ -61,7 +54,7 @@ const CreateSetting = ({ open, setOpen, refetch }: CreateSettingProps) => {
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     setIsLoadingCreateItem(true);
 
-    toast.promise(mainInstance.post(`/api/system/settings`, data), {
+    toast.promise(mainInstance.post(`/api/cats`, data), {
       loading: 'Loading...',
       success: () => {
         // refetch
@@ -88,7 +81,7 @@ const CreateSetting = ({ open, setOpen, refetch }: CreateSettingProps) => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
             <DialogHeader>
-              <DialogTitle>Create Setting</DialogTitle>
+              <DialogTitle>Create Cat</DialogTitle>
               <DialogDescription>
                 Please fill in the form below to create a new record
               </DialogDescription>
@@ -98,40 +91,12 @@ const CreateSetting = ({ open, setOpen, refetch }: CreateSettingProps) => {
                 {/* label input */}
                 <FormField
                   control={form.control}
-                  name="label"
+                  name="name"
                   render={({ field }) => (
                     <FormItem className="col-span-12">
-                      <FormLabel>Label</FormLabel>
+                      <FormLabel>Name</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="app_current_version" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                {/* value input */}
-                <FormField
-                  control={form.control}
-                  name="value"
-                  render={({ field }) => (
-                    <FormItem className="col-span-12">
-                      <FormLabel>Value</FormLabel>
-                      <FormControl>
-                        <Input {...field} placeholder="1.0.0" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                {/* notes input */}
-                <FormField
-                  control={form.control}
-                  name="notes"
-                  render={({ field }) => (
-                    <FormItem className="col-span-12">
-                      <FormLabel>Notes</FormLabel>
-                      <FormControl>
-                        <Textarea {...field} placeholder="Notes" />
+                        <Input {...field} placeholder="Luna" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -156,4 +121,4 @@ const CreateSetting = ({ open, setOpen, refetch }: CreateSettingProps) => {
   );
 };
 
-export default CreateSetting;
+export default CreateCat;

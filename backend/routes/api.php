@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RbacPermissionController;
 use App\Http\Controllers\RbacRoleController;
@@ -61,6 +62,11 @@ Route::middleware('check.token')->group(function () {
     // system global dropdowns
     Route::get('/system/global-dropdowns/paginate', [SystemGlobalDropdownController::class, 'paginate']);
     Route::resource('/system/global-dropdowns', SystemGlobalDropdownController::class);
+
+    // EXAMPLES
+    // cats
+    Route::get('/cats/paginate', [CatController::class, 'paginate']);
+    Route::resource('/cats', CatController::class);
 
     // SELECT
     Route::get('/select/roles', [SelectController::class, 'getSelectRoles']);

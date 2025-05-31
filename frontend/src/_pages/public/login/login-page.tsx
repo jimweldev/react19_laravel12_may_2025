@@ -58,7 +58,7 @@ const LoginPage = () => {
       success: response => {
         // Store user data and access token in the store
         setAuthUser(response.data.user, response.data.access_token);
-        return `Logged in successfully!`;
+        return `Success!`;
       },
       error: error => {
         // Handle error response from the API

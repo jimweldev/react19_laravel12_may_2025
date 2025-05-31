@@ -67,7 +67,7 @@ const UploadAvatar = ({ open, setOpen }: UploadAvatarProps) => {
         success: response => {
           // update user
           setUser({ ...user!, avatar: response.data.avatar });
-          return 'Avatar uploaded successfully';
+          return 'Success!';
         },
         error: error => {
           return (

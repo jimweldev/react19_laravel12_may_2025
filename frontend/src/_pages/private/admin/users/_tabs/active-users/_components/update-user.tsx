@@ -63,7 +63,7 @@ const UpdateUser = ({
 }: UpdateUserProps) => {
   // dialog content
   const title = 'Update User';
-  const description = 'Modify the details of an existing user account.';
+  const description = 'Modify the details of an existing record';
 
   // QUERY
   // query - fetch user details
@@ -72,7 +72,7 @@ const UpdateUser = ({
     isFetching,
     error,
   } = useQuery<User>({
-    queryKey: ['users', 'update-user', selectedItem?.id],
+    queryKey: ['users', 'update', selectedItem?.id],
     queryFn: async ({ signal }): Promise<User> => {
       const res = await mainInstance.get(`/api/users/${selectedItem?.id}`, {
         signal,
@@ -124,7 +124,7 @@ const UpdateUser = ({
       success: () => {
         // refetch
         refetch();
-        return 'User updated successfully';
+        return 'Success!';
       },
       error: error =>
         error.response?.data?.message || error.message || 'An error occurred',

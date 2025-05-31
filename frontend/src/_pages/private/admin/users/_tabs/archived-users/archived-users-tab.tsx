@@ -8,6 +8,7 @@ import DataTable, {
 import InputGroup from '@/components/forms/input-group';
 import Fancybox from '@/components/images/fancy-box';
 import ReactImage from '@/components/images/react-image';
+import ToolTip from '@/components/tool-tips/tool-tip';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { TableCell, TableRow } from '@/components/ui/table';
@@ -52,7 +53,11 @@ const ArchivedUsersTab = () => {
       {/* fancybox wrapper for image previews */}
       <Fancybox>
         {/* data table component */}
-        <DataTable pagination={usersPagination} columns={dataTableColumns}>
+        <DataTable
+          pagination={usersPagination}
+          columns={dataTableColumns}
+          size="md"
+        >
           {/* data table rows */}
           {!usersPagination.error && usersPagination.data
             ? usersPagination.data.records?.map((user: User) => (
@@ -93,16 +98,18 @@ const ArchivedUsersTab = () => {
                   <TableCell>
                     <InputGroup size="sm">
                       {/* restore */}
-                      <Button
-                        variant="warning"
-                        onClick={() => {
-                          setSelectedUser(user);
-                          setOpenRestoreUser(true);
-                        }}
-                        size="xs"
-                      >
-                        <FaHistory />
-                      </Button>
+                      <ToolTip content="Restore">
+                        <Button
+                          variant="warning"
+                          onClick={() => {
+                            setSelectedUser(user);
+                            setOpenRestoreUser(true);
+                          }}
+                          size="xs"
+                        >
+                          <FaHistory />
+                        </Button>
+                      </ToolTip>
                     </InputGroup>
                   </TableCell>
                 </TableRow>

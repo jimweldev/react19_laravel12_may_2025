@@ -173,6 +173,7 @@ const ActiveUsersTab = () => {
           pagination={usersPagination}
           columns={dataTableColumns}
           actions={Actions}
+          size="md"
         >
           {/* data table rows */}
           {!usersPagination.error && usersPagination.data

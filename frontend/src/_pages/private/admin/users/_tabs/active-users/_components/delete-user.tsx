@@ -39,7 +39,7 @@ const DeleteUser = ({
     isFetching,
     error,
   } = useQuery<User>({
-    queryKey: ['users', 'delete-user', selectedItem?.id],
+    queryKey: ['users', 'delete', selectedItem?.id],
     queryFn: async ({ signal }): Promise<User> => {
       const res = await mainInstance.get(`/api/users/${selectedItem?.id}`, {
         signal,
@@ -67,7 +67,7 @@ const DeleteUser = ({
         // reset
         setSelectedItem(null);
         setOpen(false);
-        return 'User deleted successfully';
+        return 'Success!';
       },
       error: error => {
         return (
@@ -111,10 +111,10 @@ const DeleteUser = ({
                       size={64}
                     />
                     {/* title */}
-                    <h3 className="text-center text-xl">Delete User</h3>
+                    <h3 className="text-center text-xl">Archive User</h3>
                     {/* description */}
                     <p className="mb-2 text-center text-slate-600">
-                      Are you sure you want to delete this user?
+                      Are you sure you want to archive this record?
                     </p>
                     {/* user name */}
                     <h2 className="text-center text-2xl font-semibold">
@@ -134,7 +134,7 @@ const DeleteUser = ({
                   type="submit"
                   disabled={isLoadingDeleteItem || !!error}
                 >
-                  Delete
+                  Archive
                 </Button>
               </DialogFooter>
             </>

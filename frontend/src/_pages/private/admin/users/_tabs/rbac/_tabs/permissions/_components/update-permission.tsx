@@ -55,7 +55,7 @@ const UpdatePermission = ({
   refetch,
 }: UpdatePermissionProps) => {
   const title = 'Update Permission';
-  const description = 'Update permission details';
+  const description = 'Modify the details of an existing record';
 
   // QUERY
   // query - use query hook
@@ -64,7 +64,7 @@ const UpdatePermission = ({
     isFetching,
     error,
   } = useQuery<RbacPermission>({
-    queryKey: ['users', 'update-permission', selectedItem?.id],
+    queryKey: ['rbac/permissions', 'update', selectedItem?.id],
     queryFn: async ({ signal }): Promise<RbacPermission> => {
       const res = await mainInstance.get(
         `/api/rbac/permissions/${selectedItem?.id}`,
@@ -112,25 +112,16 @@ const UpdatePermission = ({
 
   // form - submit
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    const newData = {
-      ...data,
-    };
-
-    // remove module from payload
-    if ('module' in newData) {
-      delete (newData as { module?: unknown }).module;
-    }
-
     setIsLoadingUpdateItem(true);
 
     toast.promise(
-      mainInstance.patch(`/api/rbac/permissions/${selectedItem?.id}`, newData),
+      mainInstance.patch(`/api/rbac/permissions/${selectedItem?.id}`, data),
       {
         loading: 'Loading...',
         success: () => {
           // refetch
           refetch();
-          return 'Permission updated successfully';
+          return 'Success!';
         },
         error: error => {
           return (

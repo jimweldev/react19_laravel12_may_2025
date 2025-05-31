@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import { CircleAlert } from 'lucide-react';
 import { toast } from 'sonner';
 import type { SystemGlobalDropdown } from '@/_types/system-global-dropdown';
-import { type User } from '@/_types/user';
 import ErrorDialog from '@/components/errors/error-dialog';
 import DialogDeleteSkeleton from '@/components/skeletons/dialog-delete-skeleton';
 import { Button } from '@/components/ui/button';
@@ -18,8 +17,10 @@ import {
 import { mainInstance } from '@/instances/main-instance';
 
 type DeleteGlobalDropdownProps = {
-  selectedItem: User | null;
-  setSelectedItem: React.Dispatch<React.SetStateAction<User | null>>;
+  selectedItem: SystemGlobalDropdown | null;
+  setSelectedItem: React.Dispatch<
+    React.SetStateAction<SystemGlobalDropdown | null>
+  >;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   refetch: () => void;
@@ -39,11 +40,7 @@ const DeleteGlobalDropdown = ({
     isFetching,
     error,
   } = useQuery<SystemGlobalDropdown>({
-    queryKey: [
-      'system/globalDropdowns',
-      'delete-globalDropdown',
-      selectedItem?.id,
-    ],
+    queryKey: ['system/globalDropdowns', 'delete', selectedItem?.id],
     queryFn: async ({ signal }): Promise<SystemGlobalDropdown> => {
       const res = await mainInstance.get(
         `/api/system/global-dropdowns/${selectedItem?.id}`,
@@ -74,7 +71,7 @@ const DeleteGlobalDropdown = ({
           // reset
           setSelectedItem(null);
           setOpen(false);
-          return 'GlobalDropdown deleted successfully';
+          return 'Success!';
         },
         error: error => {
           return (
@@ -126,7 +123,7 @@ const DeleteGlobalDropdown = ({
                     </h3>
                     {/* description */}
                     <p className="mb-2 text-center text-slate-600">
-                      Are you sure you want to delete this globalDropdown?
+                      Are you sure you want to delete this record?
                     </p>
                     {/* globalDropdown name */}
                     <h2 className="text-center text-2xl font-semibold">

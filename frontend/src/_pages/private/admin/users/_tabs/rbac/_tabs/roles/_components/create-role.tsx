@@ -93,11 +93,6 @@ const CreateRole = ({ open, setOpen, refetch }: CreateRoleProps) => {
       delete (newData as { permissions?: unknown }).permissions;
     }
 
-    // remove module from payload
-    if ('module' in newData) {
-      delete (newData as { module?: unknown }).module;
-    }
-
     setIsLoadingCreateItem(true);
 
     toast.promise(mainInstance.post(`/api/rbac/roles`, newData), {
@@ -107,7 +102,7 @@ const CreateRole = ({ open, setOpen, refetch }: CreateRoleProps) => {
         refetch();
         // reset
         form.reset();
-        return 'Role created successfully';
+        return 'Success!';
       },
       error: error => {
         return (
@@ -129,7 +124,7 @@ const CreateRole = ({ open, setOpen, refetch }: CreateRoleProps) => {
             <DialogHeader>
               <DialogTitle>Create Role</DialogTitle>
               <DialogDescription>
-                Please fill in the form below to create a new role.
+                Please fill in the form below to create a new record
               </DialogDescription>
             </DialogHeader>
             <DialogBody>

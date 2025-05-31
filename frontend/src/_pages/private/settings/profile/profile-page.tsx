@@ -68,7 +68,7 @@ const ProfilePage = () => {
       success: response => {
         // update user
         setUser(response.data);
-        return 'User updated successfully';
+        return 'Success!';
       },
       error: error => {
         return (

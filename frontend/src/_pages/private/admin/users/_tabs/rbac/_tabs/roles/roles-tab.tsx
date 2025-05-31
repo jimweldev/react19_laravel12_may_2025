@@ -7,6 +7,7 @@ import DataTable, {
   type DataTableColumns,
 } from '@/components/data-tables/data-table';
 import InputGroup from '@/components/forms/input-group';
+import ToolTip from '@/components/tool-tips/tool-tip';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { TableCell, TableRow } from '@/components/ui/table';
@@ -94,27 +95,31 @@ const RolesTab = () => {
                 <TableCell>
                   <InputGroup size="sm">
                     {/* edit */}
-                    <Button
-                      variant="info"
-                      onClick={() => {
-                        setSelectedRbacRole(rbacRole);
-                        setOpenUpdateRbacRole(true);
-                      }}
-                      size="xs"
-                    >
-                      <FaEdit />
-                    </Button>
+                    <ToolTip content="Edit">
+                      <Button
+                        variant="info"
+                        onClick={() => {
+                          setSelectedRbacRole(rbacRole);
+                          setOpenUpdateRbacRole(true);
+                        }}
+                        size="xs"
+                      >
+                        <FaEdit />
+                      </Button>
+                    </ToolTip>
                     {/* delete */}
-                    <Button
-                      variant="destructive"
-                      onClick={() => {
-                        setSelectedRbacRole(rbacRole);
-                        setOpenDeleteRbacRole(true);
-                      }}
-                      size="xs"
-                    >
-                      <FaTrash />
-                    </Button>
+                    <ToolTip content="Delete">
+                      <Button
+                        variant="destructive"
+                        onClick={() => {
+                          setSelectedRbacRole(rbacRole);
+                          setOpenDeleteRbacRole(true);
+                        }}
+                        size="xs"
+                      >
+                        <FaTrash />
+                      </Button>
+                    </ToolTip>
                   </InputGroup>
                 </TableCell>
               </TableRow>

@@ -5,6 +5,7 @@ import type { SystemSetting } from '@/_types/system-setting';
 import type { DataTableColumns } from '@/components/data-tables/data-table';
 import DataTable from '@/components/data-tables/data-table';
 import InputGroup from '@/components/forms/input-group';
+import ToolTip from '@/components/tool-tips/tool-tip';
 import { Button } from '@/components/ui/button';
 import { TableCell, TableRow } from '@/components/ui/table';
 import usePagination from '@/hooks/use-pagination';
@@ -17,7 +18,7 @@ const SettingsTab = () => {
   // pagination - use pagination hook
   const systemSettingsPagination = usePagination(
     '/api/system/settings/paginate',
-    'id',
+    'label',
   );
 
   // pagination - actions
@@ -90,27 +91,31 @@ const SettingsTab = () => {
                   <TableCell>
                     <InputGroup size="sm">
                       {/* edit */}
-                      <Button
-                        variant="info"
-                        onClick={() => {
-                          setSelectedSystemSetting(systemSetting);
-                          setOpenUpdateSystemSetting(true);
-                        }}
-                        size="xs"
-                      >
-                        <FaEdit />
-                      </Button>
+                      <ToolTip content="Edit">
+                        <Button
+                          variant="info"
+                          onClick={() => {
+                            setSelectedSystemSetting(systemSetting);
+                            setOpenUpdateSystemSetting(true);
+                          }}
+                          size="xs"
+                        >
+                          <FaEdit />
+                        </Button>
+                      </ToolTip>
                       {/* delete */}
-                      <Button
-                        variant="destructive"
-                        onClick={() => {
-                          setSelectedSystemSetting(systemSetting);
-                          setOpenDeleteSystemSetting(true);
-                        }}
-                        size="xs"
-                      >
-                        <FaTrash />
-                      </Button>
+                      <ToolTip content="Delete">
+                        <Button
+                          variant="destructive"
+                          onClick={() => {
+                            setSelectedSystemSetting(systemSetting);
+                            setOpenDeleteSystemSetting(true);
+                          }}
+                          size="xs"
+                        >
+                          <FaTrash />
+                        </Button>
+                      </ToolTip>
                     </InputGroup>
                   </TableCell>
                 </TableRow>

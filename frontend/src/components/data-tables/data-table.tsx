@@ -54,6 +54,7 @@ interface DataTableProps<T> {
   actions?: React.ReactNode;
   children?: React.ReactNode;
   showRefreshButton?: boolean; // Add this new prop
+  size?: 'sm' | 'md' | 'lg';
 }
 
 const DataTable = <T,>({
@@ -76,6 +77,7 @@ const DataTable = <T,>({
   actions,
   children,
   showRefreshButton = true, // Default to true for backward compatibility
+  size = 'md',
 }: DataTableProps<T>) => {
   const records = pagination.data?.records || [];
   const info = pagination.data?.info;
@@ -142,7 +144,7 @@ const DataTable = <T,>({
 
       <div className="overflow-x-auto">
         <Table
-          className={`border-t ${pagination.isFetching ? 'border-primary' : ''}`}
+          className={`border-t ${pagination.isFetching ? 'border-primary' : ''} table-${size}`}
         >
           <TableHeader className="select-none">
             <TableRow>
@@ -164,7 +166,7 @@ const DataTable = <T,>({
           </TableHeader>
           <TableBody className="border-b">
             {children}
-            {!pagination.isFetching &&
+            {!pagination.isLoading &&
               !pagination.error &&
               records.length === 0 && (
                 <TableRow>

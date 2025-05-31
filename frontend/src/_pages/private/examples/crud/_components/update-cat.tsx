@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import type { SystemGlobalDropdown } from '@/_types/system-global-dropdown';
+import type { Cat } from '@/_types/cat';
 import ErrorDialog from '@/components/errors/error-dialog';
 import DialogSkeleton from '@/components/skeletons/dialog-skeleton';
 import { Button } from '@/components/ui/button';
@@ -30,50 +30,41 @@ import { mainInstance } from '@/instances/main-instance';
 
 // form - form validation
 const FormSchema = z.object({
-  label: z.string().min(1, {
-    message: 'Required',
-  }),
-  module: z.string().min(1, {
-    message: 'Required',
-  }),
-  type: z.string().min(1, {
+  name: z.string().min(1, {
     message: 'Required',
   }),
 });
 
-type UpdateGlobalDropdownProps = {
-  selectedItem: SystemGlobalDropdown | null;
-  setSelectedItem: React.Dispatch<
-    React.SetStateAction<SystemGlobalDropdown | null>
-  >;
+type UpdateCatProps = {
+  selectedItem: Cat | null;
+  setSelectedItem: React.Dispatch<React.SetStateAction<Cat | null>>;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   refetch: () => void;
 };
 
-const UpdateGlobalDropdown = ({
+const UpdateCat = ({
   selectedItem,
   setSelectedItem,
   open,
   setOpen,
   refetch,
-}: UpdateGlobalDropdownProps) => {
-  const title = 'Update GlobalDropdown';
+}: UpdateCatProps) => {
+  const title = 'Update Cat';
   const description = 'Modify the details of an existing record';
 
   // QUERY
   // query - use query hook
   const {
-    data: systemGlobalDropdown,
+    data: cat,
     isFetching,
     error,
-  } = useQuery<SystemGlobalDropdown>({
-    queryKey: ['system/global-dropdowns', 'update', selectedItem?.id],
-    queryFn: async ({ signal }): Promise<SystemGlobalDropdown> => {
-      const res = await mainInstance.get(
-        `/api/system/global-dropdowns/${selectedItem?.id}`,
-        { signal },
-      );
+  } = useQuery<Cat>({
+    queryKey: ['cats', 'update', selectedItem?.id],
+    queryFn: async ({ signal }): Promise<Cat> => {
+      const res = await mainInstance.get(`/api/cats/${selectedItem?.id}`, {
+        signal,
+      });
       return res.data;
     },
     enabled: !!selectedItem && open,
@@ -84,9 +75,7 @@ const UpdateGlobalDropdown = ({
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      label: '',
-      module: '',
-      type: '',
+      name: '',
     },
   });
 
@@ -95,43 +84,33 @@ const UpdateGlobalDropdown = ({
 
   // form - set default values
   useEffect(() => {
-    if (systemGlobalDropdown) {
+    if (cat) {
       form.reset({
-        label: systemGlobalDropdown.label || '',
-        module: systemGlobalDropdown.module || '',
-        type: systemGlobalDropdown.type || '',
+        name: cat.name || '',
       });
     }
-  }, [systemGlobalDropdown, form]);
+  }, [cat, form]);
 
   // form - submit
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     setIsLoadingUpdateItem(true);
 
-    toast.promise(
-      mainInstance.patch(
-        `/api/system/global-dropdowns/${selectedItem?.id}`,
-        data,
-      ),
-      {
-        loading: 'Loading...',
-        success: () => {
-          // refetch
-          refetch();
-          return 'Success!';
-        },
-        error: error => {
-          return (
-            error.response?.data?.message ||
-            error.message ||
-            'An error occurred'
-          );
-        },
-        finally: () => {
-          setIsLoadingUpdateItem(false);
-        },
+    toast.promise(mainInstance.patch(`/api/cats/${selectedItem?.id}`, data), {
+      loading: 'Loading...',
+      success: () => {
+        // refetch
+        refetch();
+        return 'Success!';
       },
-    );
+      error: error => {
+        return (
+          error.response?.data?.message || error.message || 'An error occurred'
+        );
+      },
+      finally: () => {
+        setIsLoadingUpdateItem(false);
+      },
+    });
   };
 
   return (
@@ -151,7 +130,7 @@ const UpdateGlobalDropdown = ({
           <DialogSkeleton
             title={title}
             description={description}
-            inputCount={2}
+            inputCount={1}
           />
         ) : (
           <Form {...form}>
@@ -170,40 +149,12 @@ const UpdateGlobalDropdown = ({
                     {/* label input */}
                     <FormField
                       control={form.control}
-                      name="label"
+                      name="name"
                       render={({ field }) => (
                         <FormItem className="col-span-12">
                           <FormLabel>Label</FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder="Regular" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    {/* value input */}
-                    <FormField
-                      control={form.control}
-                      name="module"
-                      render={({ field }) => (
-                        <FormItem className="col-span-12">
-                          <FormLabel>Module</FormLabel>
-                          <FormControl>
-                            <Input {...field} placeholder="users" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    {/* notes input */}
-                    <FormField
-                      control={form.control}
-                      name="type"
-                      render={({ field }) => (
-                        <FormItem className="col-span-12">
-                          <FormLabel>Type</FormLabel>
-                          <FormControl>
-                            <Input {...field} placeholder="status" />
+                            <Input {...field} placeholder="Create User" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -231,4 +182,4 @@ const UpdateGlobalDropdown = ({
   );
 };
 
-export default UpdateGlobalDropdown;
+export default UpdateCat;

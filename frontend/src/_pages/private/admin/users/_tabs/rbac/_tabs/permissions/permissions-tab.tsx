@@ -6,6 +6,7 @@ import DataTable, {
   type DataTableColumns,
 } from '@/components/data-tables/data-table';
 import InputGroup from '@/components/forms/input-group';
+import ToolTip from '@/components/tool-tips/tool-tip';
 import { Button } from '@/components/ui/button';
 import { TableCell, TableRow } from '@/components/ui/table';
 import usePagination from '@/hooks/use-pagination';
@@ -82,27 +83,31 @@ const PermissionsTab = () => {
                   <TableCell>
                     <InputGroup size="sm">
                       {/* edit */}
-                      <Button
-                        variant="info"
-                        onClick={() => {
-                          setSelectedRbacPermission(rbacPermission);
-                          setOpenUpdateRbacPermission(true);
-                        }}
-                        size="xs"
-                      >
-                        <FaEdit />
-                      </Button>
+                      <ToolTip content="Edit">
+                        <Button
+                          variant="info"
+                          onClick={() => {
+                            setSelectedRbacPermission(rbacPermission);
+                            setOpenUpdateRbacPermission(true);
+                          }}
+                          size="xs"
+                        >
+                          <FaEdit />
+                        </Button>
+                      </ToolTip>
                       {/* delete */}
-                      <Button
-                        variant="destructive"
-                        onClick={() => {
-                          setSelectedRbacPermission(rbacPermission);
-                          setOpenDeleteRbacPermission(true);
-                        }}
-                        size="xs"
-                      >
-                        <FaTrash />
-                      </Button>
+                      <ToolTip content="Delete">
+                        <Button
+                          variant="destructive"
+                          onClick={() => {
+                            setSelectedRbacPermission(rbacPermission);
+                            setOpenDeleteRbacPermission(true);
+                          }}
+                          size="xs"
+                        >
+                          <FaTrash />
+                        </Button>
+                      </ToolTip>
                     </InputGroup>
                   </TableCell>
                 </TableRow>

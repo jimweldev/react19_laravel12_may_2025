@@ -5,6 +5,7 @@ import type { SystemGlobalDropdown } from '@/_types/system-global-dropdown';
 import type { DataTableColumns } from '@/components/data-tables/data-table';
 import DataTable from '@/components/data-tables/data-table';
 import InputGroup from '@/components/forms/input-group';
+import ToolTip from '@/components/tool-tips/tool-tip';
 import { Button } from '@/components/ui/button';
 import { TableCell, TableRow } from '@/components/ui/table';
 import usePagination from '@/hooks/use-pagination';
@@ -91,27 +92,35 @@ const GlobalDropdownsTab = () => {
                   <TableCell>
                     <InputGroup size="sm">
                       {/* edit */}
-                      <Button
-                        variant="info"
-                        onClick={() => {
-                          setSelectedSystemGlobalDropdown(systemGlobalDropdown);
-                          setOpenUpdateSystemGlobalDropdown(true);
-                        }}
-                        size="xs"
-                      >
-                        <FaEdit />
-                      </Button>
+                      <ToolTip content="Edit">
+                        <Button
+                          variant="info"
+                          onClick={() => {
+                            setSelectedSystemGlobalDropdown(
+                              systemGlobalDropdown,
+                            );
+                            setOpenUpdateSystemGlobalDropdown(true);
+                          }}
+                          size="xs"
+                        >
+                          <FaEdit />
+                        </Button>
+                      </ToolTip>
                       {/* delete */}
-                      <Button
-                        variant="destructive"
-                        onClick={() => {
-                          setSelectedSystemGlobalDropdown(systemGlobalDropdown);
-                          setOpenDeleteSystemGlobalDropdown(true);
-                        }}
-                        size="xs"
-                      >
-                        <FaTrash />
-                      </Button>
+                      <ToolTip content="Delete">
+                        <Button
+                          variant="destructive"
+                          onClick={() => {
+                            setSelectedSystemGlobalDropdown(
+                              systemGlobalDropdown,
+                            );
+                            setOpenDeleteSystemGlobalDropdown(true);
+                          }}
+                          size="xs"
+                        >
+                          <FaTrash />
+                        </Button>
+                      </ToolTip>
                     </InputGroup>
                   </TableCell>
                 </TableRow>

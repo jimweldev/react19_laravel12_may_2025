@@ -73,7 +73,7 @@ const CreateGlobalDropdown = ({
         refetch();
         // reset
         form.reset();
-        return 'GlobalDropdown created successfully';
+        return 'Success!';
       },
       error: error => {
         return (
@@ -95,7 +95,7 @@ const CreateGlobalDropdown = ({
             <DialogHeader>
               <DialogTitle>Create GlobalDropdown</DialogTitle>
               <DialogDescription>
-                Please fill in the form below to create a new globalDropdown.
+                Please fill in the form below to create a new record
               </DialogDescription>
             </DialogHeader>
             <DialogBody>

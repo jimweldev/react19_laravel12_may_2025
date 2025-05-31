@@ -26,7 +26,7 @@ const GoogleLogin = () => {
           loading: 'Loading...',
           success: response => {
             setAuthUser(response.data.user, response.data.access_token);
-            return `Logged in successfully!`;
+            return `Success!`;
           },
           error: error => {
             return (

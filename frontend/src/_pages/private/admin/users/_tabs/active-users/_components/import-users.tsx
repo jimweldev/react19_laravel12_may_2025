@@ -80,7 +80,7 @@ const ImportUsers = ({ open, setOpen, refetch }: ImportUsersProps) => {
           refetch();
           // reset
           setFile(null);
-          return 'Users imported successfully';
+          return 'Success!';
         },
         error: error => {
           return (

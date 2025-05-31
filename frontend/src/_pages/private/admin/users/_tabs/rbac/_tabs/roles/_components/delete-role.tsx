@@ -39,7 +39,7 @@ const DeleteRole = ({
     isFetching,
     error,
   } = useQuery<RbacRole>({
-    queryKey: ['users', 'delete-role', selectedItem?.id],
+    queryKey: ['rbac/roles', 'delete', selectedItem?.id],
     queryFn: async ({ signal }): Promise<RbacRole> => {
       const res = await mainInstance.get(
         `/api/rbac/roles/${selectedItem?.id}`,
@@ -68,7 +68,7 @@ const DeleteRole = ({
         // reset
         setSelectedItem(null);
         setOpen(false);
-        return 'Role deleted successfully';
+        return 'Success!';
       },
       error: error => {
         return (
@@ -115,7 +115,7 @@ const DeleteRole = ({
                     <h3 className="text-center text-xl">Delete Role</h3>
                     {/* description */}
                     <p className="mb-2 text-center text-slate-600">
-                      Are you sure you want to delete this role?
+                      Are you sure you want to delete this record?
                     </p>
                     {/* role name */}
                     <h2 className="text-center text-2xl font-semibold">
