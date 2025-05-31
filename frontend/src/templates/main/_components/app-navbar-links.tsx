@@ -1,6 +1,7 @@
 import { CgMenuGridO } from 'react-icons/cg';
 import { FaCode, FaHouse, FaUserGear } from 'react-icons/fa6';
 import { NavLink, useLocation } from 'react-router';
+import useAuthUserStore from '@/_stores/auth-user-store';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -16,21 +17,35 @@ const AppNavbarLinks = () => {
     location.pathname.startsWith(path),
   );
 
+  const { user } = useAuthUserStore();
+
   const paths = [
+    ...(user?.is_admin
+      ? [
+          {
+            path: '/admin',
+            icon: <FaUserGear className="text-inherit" />,
+            label: 'Admin',
+          },
+        ]
+      : []),
     {
-      path: '/admin',
-      icon: <FaUserGear className="text-inherit" />,
-      label: 'Admin',
+      path: '/',
+      icon: <FaHouse className="text-inherit" />,
+      label: 'Home',
     },
-    { path: '/', icon: <FaHouse className="text-inherit" />, label: 'Home' },
-    {
-      path: '/examples',
-      icon: <FaCode className="text-inherit" />,
-      label: 'Examples',
-    },
+    ...(import.meta.env.VITE_ENV === 'development'
+      ? [
+          {
+            path: '/examples',
+            icon: <FaCode className="text-inherit" />,
+            label: 'Examples',
+          },
+        ]
+      : []),
   ];
 
-  return (
+  return paths.length > 0 ? (
     <>
       <div className="sm:hidden">
         <DropdownMenu>
@@ -117,7 +132,7 @@ const AppNavbarLinks = () => {
         )}
       </div>
     </>
-  );
+  ) : null;
 };
 
 export default AppNavbarLinks;

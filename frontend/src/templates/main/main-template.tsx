@@ -7,6 +7,7 @@ import {
 } from 'react-icons/fa6';
 import { Link, Outlet } from 'react-router';
 import useAuthUserStore from '@/_stores/auth-user-store';
+import fallbackImage from '@/assets/images/default-avatar.png';
 import ReactImage from '@/components/images/react-image';
 import { Button } from '@/components/ui/button';
 import {
@@ -83,6 +84,7 @@ const MainTemplate = ({ sidebarGroups }: MainTemplateProps) => {
                       <ReactImage
                         src={`${import.meta.env.VITE_STORAGE_BASE_URL}/avatars/${user?.avatar}`}
                         alt="Avatar"
+                        unloaderSrc={fallbackImage}
                       />
                     </div>
                   </div>

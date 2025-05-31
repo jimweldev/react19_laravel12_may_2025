@@ -53,10 +53,14 @@ class QueryHelper {
             'gte' => '>=',
             'eq' => '=',
             'neq' => '!=',
+            'like' => 'like',
         ];
 
         foreach ($conditions as $operator => $value) {
             if (isset($operators[$operator])) {
+                if ($operator === 'like') {
+                    $value = '%' . $value . '%';
+                }
                 $query->where($key, $operators[$operator], $value);
             } else {
                 $query->where($key.'.'.$operator, $value);

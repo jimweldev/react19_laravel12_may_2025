@@ -84,8 +84,6 @@ const GeneralPage = () => {
   });
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    // eslint-disable-next-line no-console
-    console.log(data);
     // Add save logic here
     setTheme(data.theme);
     setFontSize(data.font_size);

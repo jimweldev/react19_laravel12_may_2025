@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\QueryHelper;
+use App\Helpers\UserHelper;
 use App\Models\RbacUserRole;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -31,7 +32,14 @@ class UserController extends Controller {
     }
 
     public function show($id) {
-        $record = User::find($id);
+        $record = User::where('id', $id)
+            ->with(['rbac_user_roles' => function ($query) {
+                $query->select('id', 'user_id', 'rbac_role_id')
+                    ->with(['rbac_role' => function ($query) {
+                        $query->select('id', 'label');
+                    }]);
+            }])
+            ->first();
 
         if (!$record) {
             return response()->json([
@@ -122,7 +130,12 @@ class UserController extends Controller {
         $queryParams = $request->all();
 
         try {
-            $query = User::query();
+            $query = User::with(['rbac_user_roles' => function ($query) {
+                $query->select('id', 'user_id', 'rbac_role_id')
+                    ->with(['rbac_role' => function ($query) {
+                        $query->select('id', 'label');
+                    }]);
+            }]);
 
             // Apply query filters
             $type = 'paginate';
@@ -160,7 +173,10 @@ class UserController extends Controller {
                         ->orWhere('first_name', 'LIKE', '%'.$search.'%')
                         ->orWhere('middle_name', 'LIKE', '%'.$search.'%')
                         ->orWhere('last_name', 'LIKE', '%'.$search.'%')
-                        ->orWhere('suffix', 'LIKE', '%'.$search.'%');
+                        ->orWhere('suffix', 'LIKE', '%'.$search.'%')
+                        ->orWhereHas('rbac_user_roles.rbac_role', function($query) use ($search) {
+                            $query->where('label', 'LIKE', '%'.$search.'%');
+                        });
                 });
             }
 
@@ -171,10 +187,10 @@ class UserController extends Controller {
             $page = $request->input('page', 1);
             QueryHelper::applyLimitAndOffset($query, $limit, $page);
 
-            $users = $query->get();
+            $records = $query->get();
 
             return response()->json([
-                'records' => $users,
+                'records' => $records,
                 'info' => [
                     'total' => $total,
                     'pages' => ceil($total / $limit),
@@ -326,38 +342,6 @@ class UserController extends Controller {
         return response()->json($record, 200);
     }
 
-    public function addUserRoles(Request $request, $id) {
-        try {
-            // check if role already exists
-            $roleExists = RbacUserRole::where('user_id', $id)->exists();
-            if ($roleExists) {
-                return response()->json([
-                    'message' => 'User already exists',
-                ], 400);
-            }
-
-            $records = [];
-
-            // create role
-            $roleIds = $request->input('role_ids');
-            foreach ($roleIds as $roleId) {
-                $role = RbacUserRole::create([
-                    'user_id' => $id,
-                    'rbac_role_id' => $roleId,
-                ]);
-
-                // append to records
-                array_push($records, $role);
-            }
-
-            return response()->json([
-                'data' => $records,
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Error creating role'], 500);
-        }
-    }
-
     public function updateUserRoles(Request $request, $id) {
         try {
             $user = User::find($id);
@@ -380,22 +364,6 @@ class UserController extends Controller {
                 'message' => 'Error updating user roles',
                 'error' => $e->getMessage(),
             ], 500);
-        }
-    }
-
-    public function deleteUserRoles($id) {
-        try {
-            $records = RbacUserRole::where('user_id', $id)->delete();
-
-            return response()->json([
-                'records' => $records,
-                'message' => 'User roles deleted successfully.',
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'An error occurred.',
-                'error' => $e->getMessage(),
-            ], 400);
         }
     }
 
@@ -450,6 +418,8 @@ class UserController extends Controller {
                 return response()->json(['message' => 'User not found'], 404);
             }
             $user->update($request->all());
+
+            $user = UserHelper::getUser($user->email);
 
             return response()->json($user);
         } catch (\Exception $e) {

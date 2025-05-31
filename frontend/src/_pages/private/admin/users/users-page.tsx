@@ -4,6 +4,7 @@ import { Card, CardBody } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ActiveUsersTab from './_tabs/active-users/active-users-tab';
 import ArchivedUsersTab from './_tabs/archived-users/archived-users-tab';
+import RbacTab from './_tabs/rbac/rbac-tab';
 
 const UsersPage = () => {
   const { userTab } = useParams();
@@ -23,21 +24,29 @@ const UsersPage = () => {
           <TabsTrigger value="active-users">Active Users</TabsTrigger>
           {/* tabs - archived users */}
           <TabsTrigger value="archived-users">Archived Users</TabsTrigger>
+          {/* tabs - rbac */}
+          <TabsTrigger value="rbac">RBAC</TabsTrigger>
         </TabsList>
       </div>
 
       <Card>
-        <CardBody>
-          {/* tabs - content */}
-          {/* tabs - active users */}
-          <TabsContent value="active-users">
+        {/* tabs - content */}
+        {/* tabs - active users */}
+        <TabsContent value="active-users">
+          <CardBody>
             <ActiveUsersTab />
-          </TabsContent>
-          {/* tabs - archived users */}
-          <TabsContent value="archived-users">
+          </CardBody>
+        </TabsContent>
+        {/* tabs - archived users */}
+        <TabsContent value="archived-users">
+          <CardBody>
             <ArchivedUsersTab />
-          </TabsContent>
-        </CardBody>
+          </CardBody>
+        </TabsContent>
+        {/* tabs - rbac */}
+        <TabsContent value="rbac">
+          <RbacTab />
+        </TabsContent>
       </Card>
     </Tabs>
   );

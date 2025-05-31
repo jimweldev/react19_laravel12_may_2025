@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { AxiosError } from 'axios';
 import { components, type GroupBase, type OptionProps } from 'react-select';
 import { AsyncPaginate, type LoadOptions } from 'react-select-async-paginate';
@@ -28,47 +27,42 @@ const UsersSelect = ({ ...props }) => {
     UserOptionData,
     GroupBase<UserOptionData>,
     { page: number }
-  > = useCallback(
-    async (searchQuery, _loadedOptions, additional = { page: 1 }) => {
-      const page = additional.page || 1;
+  > = async (searchQuery, _loadedOptions, additional = { page: 1 }) => {
+    const page = additional.page || 1;
 
-      try {
-        const response = await mainInstance.get(
-          `/api/select/users?page=${page}&search=${searchQuery}&sort=first_name&limit=20`,
+    try {
+      const response = await mainInstance.get(
+        `/api/select/users?page=${page}&search=${searchQuery}&sort=first_name&limit=20`,
+      );
+
+      const options = response.data.records.map((user: User) => ({
+        value: user.id,
+        label: formatName(user, 'semifull'),
+        email: user.email,
+      }));
+
+      return {
+        options,
+        hasMore: response.data.info.pages > page,
+        additional: {
+          page: page + 1,
+        },
+      };
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        toast.error(
+          error.response?.data?.message || error.message || 'An error occurred',
         );
-
-        const options = response.data.records.map((user: User) => ({
-          value: user.id,
-          label: formatName(user, 'semifull'),
-          email: user.email,
-        }));
-
-        return {
-          options,
-          hasMore: response.data.info.pages > page,
-          additional: {
-            page: page + 1,
-          },
-        };
-      } catch (error: unknown) {
-        if (error instanceof AxiosError) {
-          toast.error(
-            error.response?.data?.message ||
-              error.message ||
-              'An error occurred',
-          );
-        } else {
-          toast.error('An unknown error occurred');
-        }
-
-        return {
-          options: [],
-          hasMore: false,
-        };
+      } else {
+        toast.error('An unknown error occurred');
       }
-    },
-    [],
-  );
+
+      return {
+        options: [],
+        hasMore: false,
+      };
+    }
+  };
 
   const shouldLoadMore = (
     scrollHeight: number,

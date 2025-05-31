@@ -236,6 +236,10 @@ html {
   height: 100% !important;
 }
 
+.invalid .react-select__control {
+  @apply !ring-destructive/20 dark:!ring-destructive/40 !border-destructive;
+}
+
 .react-select__control--is-focused {
   @apply !border-primary !ring-ring/50 !ring-[3px];
   outline: none !important;
@@ -251,33 +255,10 @@ html {
 
 /* Scrollbar Styling */
 .react-select__menu-list {
-  /* max-height: 200px;
-  overflow-y: auto; */
-  /* scrollbar-width: thin;
-  scrollbar-color: hsl(var(--primary)) #f1f1f1; */
   @apply bg-card;
 }
 
-/* .react-select__menu-list::-webkit-scrollbar {
-  width: 8px;
-}
-
-.react-select__menu-list::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-.react-select__menu-list::-webkit-scrollbar-thumb {
-  background-color: hsl(var(--primary));
-  border-radius: 4px;
-  border: 2px solid #f1f1f1;
-}
-
-.react-select__menu-list::-webkit-scrollbar-thumb:hover {
-  background-color: #0056b3;
-} */
-
 .react-select__option {
-  /* @apply !bg-primary !text-primary-foreground; */
   @apply !px-3 !py-2 !text-sm;
 }
 
@@ -290,4 +271,42 @@ html {
 .react-select__option--is-selected,
 .react-select__option--is-selected:hover {
   @apply !bg-primary !text-primary-foreground;
+}
+
+.ql-editor {
+  min-height: 150px;
+}
+
+.ql-toolbar {
+  @apply !rounded-t-md;
+}
+
+.ql-container {
+  @apply !rounded-b-md;
+}
+
+.quill.invalid:focus-within {
+  @apply !ring-destructive/20 dark:!ring-destructive/40 rounded-md ring-[3px];
+}
+
+.quill.invalid .ql-toolbar,
+.quill.invalid .ql-container {
+  @apply !border-destructive;
+}
+
+.react-quill-content strong {
+  @apply font-semibold;
+}
+
+.react-quill-content ol,
+.react-quill-content ul {
+  @apply !pl-8;
+}
+
+.react-quill-content li[data-list='ordered'] {
+  @apply list-decimal;
+}
+
+.react-quill-content li[data-list='bullet'] {
+  @apply list-disc;
 }

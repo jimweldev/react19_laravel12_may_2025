@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { CircleAlert } from 'lucide-react';
 import { toast } from 'sonner';
-import { type RbacUserRole } from '@/_types/rbac-user-role';
+import type { SystemGlobalDropdown } from '@/_types/system-global-dropdown';
 import { type User } from '@/_types/user';
 import ErrorDialog from '@/components/errors/error-dialog';
 import DialogDeleteSkeleton from '@/components/skeletons/dialog-delete-skeleton';
@@ -16,9 +16,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { mainInstance } from '@/instances/main-instance';
-import { formatName } from '@/lib/format-name';
 
-type DeleteUserRolesProps = {
+type DeleteGlobalDropdownProps = {
   selectedItem: User | null;
   setSelectedItem: React.Dispatch<React.SetStateAction<User | null>>;
   open: boolean;
@@ -26,24 +25,28 @@ type DeleteUserRolesProps = {
   refetch: () => void;
 };
 
-const DeleteUserRoles = ({
+const DeleteGlobalDropdown = ({
   selectedItem,
   setSelectedItem,
   open,
   setOpen,
   refetch,
-}: DeleteUserRolesProps) => {
+}: DeleteGlobalDropdownProps) => {
   // QUERY
   // query - use query hook
   const {
-    data: rbacUserRole,
+    data: systemGlobalDropdown,
     isFetching,
     error,
-  } = useQuery<User>({
-    queryKey: ['users', 'delete-user-roles', selectedItem?.id],
-    queryFn: async ({ signal }): Promise<RbacUserRole> => {
+  } = useQuery<SystemGlobalDropdown>({
+    queryKey: [
+      'system/globalDropdowns',
+      'delete-globalDropdown',
+      selectedItem?.id,
+    ],
+    queryFn: async ({ signal }): Promise<SystemGlobalDropdown> => {
       const res = await mainInstance.get(
-        `/api/users/${selectedItem?.id}/user-roles`,
+        `/api/system/global-dropdowns/${selectedItem?.id}`,
         { signal },
       );
       return res.data;
@@ -62,7 +65,7 @@ const DeleteUserRoles = ({
     setIsLoadingDeleteItem(true);
 
     toast.promise(
-      mainInstance.delete(`/api/users/${selectedItem?.id}/user-roles`),
+      mainInstance.delete(`/api/system/global-dropdowns/${selectedItem?.id}`),
       {
         loading: 'Loading...',
         success: () => {
@@ -71,7 +74,7 @@ const DeleteUserRoles = ({
           // reset
           setSelectedItem(null);
           setOpen(false);
-          return 'Role deleted successfully';
+          return 'GlobalDropdown deleted successfully';
         },
         error: error => {
           return (
@@ -101,9 +104,9 @@ const DeleteUserRoles = ({
       <DialogContent>
         {/* delete form */}
         <form onSubmit={onSubmit}>
-          {isFetching ? <DialogDeleteSkeleton /> : null}
-
-          {!isFetching ? (
+          {isFetching ? (
+            <DialogDeleteSkeleton />
+          ) : (
             <>
               <DialogTitle />
               <DialogDescription />
@@ -118,14 +121,16 @@ const DeleteUserRoles = ({
                       size={64}
                     />
                     {/* title */}
-                    <h3 className="text-center text-xl">Delete Role</h3>
+                    <h3 className="text-center text-xl">
+                      Delete GlobalDropdown
+                    </h3>
                     {/* description */}
                     <p className="mb-2 text-center text-slate-600">
-                      Are you sure you want to delete this role?
+                      Are you sure you want to delete this globalDropdown?
                     </p>
-                    {/* user name */}
+                    {/* globalDropdown name */}
                     <h2 className="text-center text-2xl font-semibold">
-                      {formatName(rbacUserRole, 'semifull')}
+                      {systemGlobalDropdown?.label}
                     </h2>
                   </>
                 )}
@@ -145,11 +150,11 @@ const DeleteUserRoles = ({
                 </Button>
               </DialogFooter>
             </>
-          ) : null}
+          )}
         </form>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default DeleteUserRoles;
+export default DeleteGlobalDropdown;

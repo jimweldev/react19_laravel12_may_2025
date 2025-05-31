@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\QueryHelper;
 use App\Models\RbacPermission;
 use App\Models\RbacRole;
+use App\Models\SystemGlobalDropdown;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -35,10 +36,10 @@ class SelectController extends Controller {
             $page = $request->input('page', 1);
             QueryHelper::applyLimitAndOffset($query, $limit, $page);
 
-            $users = $query->get();
+            $records = $query->get();
 
             return response()->json([
-                'records' => $users,
+                'records' => $records,
                 'info' => [
                     'total' => $total,
                     'pages' => ceil($total / $limit),
@@ -78,10 +79,10 @@ class SelectController extends Controller {
             $page = $request->input('page', 1);
             QueryHelper::applyLimitAndOffset($query, $limit, $page);
 
-            $users = $query->get();
+            $records = $query->get();
 
             return response()->json([
-                'records' => $users,
+                'records' => $records,
                 'info' => [
                     'total' => $total,
                     'pages' => ceil($total / $limit),
@@ -121,10 +122,52 @@ class SelectController extends Controller {
             $page = $request->input('page', 1);
             QueryHelper::applyLimitAndOffset($query, $limit, $page);
 
-            $users = $query->get();
+            $records = $query->get();
 
             return response()->json([
-                'records' => $users,
+                'records' => $records,
+                'info' => [
+                    'total' => $total,
+                    'pages' => ceil($total / $limit),
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred.',
+                'error' => $e->getMessage(),
+            ], 400);
+        }
+    }
+
+    public function getSelectSystemGlobalDropdowns(Request $request) {
+        $queryParams = $request->all();
+
+        try {
+            $query = SystemGlobalDropdown::query();
+
+            // Apply query filters
+            $type = 'paginate';
+            QueryHelper::apply($query, $queryParams, $type);
+
+            // search
+            if ($request->has('search')) {
+                $search = $request->input('search');
+                $query->where(function ($query) use ($search) {
+                    $query->where('label', 'LIKE', '%'.$search.'%');
+                });
+            }
+
+            $total = $query->count();
+
+            // limit and offset
+            $limit = $request->input('limit', 10);
+            $page = $request->input('page', 1);
+            QueryHelper::applyLimitAndOffset($query, $limit, $page);
+
+            $records = $query->get();
+
+            return response()->json([
+                'records' => $records,
                 'info' => [
                     'total' => $total,
                     'pages' => ceil($total / $limit),

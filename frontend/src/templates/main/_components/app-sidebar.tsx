@@ -1,5 +1,6 @@
-import { Frame, MessageCircleQuestion } from 'lucide-react';
+import { MessageCircleQuestion } from 'lucide-react';
 import { Link, NavLink } from 'react-router';
+import appLogo from '@/assets/images/app-logo.jpg';
 import {
   Sidebar,
   SidebarContent,
@@ -34,11 +35,12 @@ type SidebarSubItem = {
 
 type AppSidebarProps = {
   sidebarGroups: SidebarGroup[];
+  side?: 'left' | 'right';
 };
 
-const AppSidebar = ({ sidebarGroups = [] }: AppSidebarProps) => {
+const AppSidebar = ({ sidebarGroups = [], ...props }: AppSidebarProps) => {
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar {...props} collapsible="icon">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -48,14 +50,18 @@ const AppSidebar = ({ sidebarGroups = [] }: AppSidebarProps) => {
                 className="!text-sidebar-foreground !bg-transparent"
               >
                 <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <Frame className="size-4" />
+                  <img
+                    className="size-full rounded-lg"
+                    src={appLogo}
+                    alt="App Logo"
+                  />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
                     {import.meta.env.VITE_APP_NAME}
                   </span>
                   <span className="truncate text-xs">
-                    Connext International Inc.
+                    {import.meta.env.VITE_COMPANY_NAME}
                   </span>
                 </div>
               </SidebarMenuButton>

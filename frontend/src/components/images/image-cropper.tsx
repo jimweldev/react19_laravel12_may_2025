@@ -110,8 +110,20 @@ const ImageCropper = ({
           />
         </div>
       ) : (
-        <div className="border-destructive bg-muted text-muted-foreground relative border-4 p-3">
-          <p className="text-center">Select an image below</p>
+        <div className="space-y-3">
+          <div className="bg-muted relative flex aspect-square items-center justify-center border-4">
+            <p className="text-muted-foreground text-center">
+              No image selected
+            </p>
+          </div>
+
+          <Slider
+            value={[0]}
+            max={0}
+            min={0}
+            step={1}
+            onValueChange={value => setZoom(value[0] / 10)}
+          />
         </div>
       )}
     </div>

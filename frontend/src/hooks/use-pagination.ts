@@ -15,9 +15,10 @@ const usePagination = (
 
   const { isLoading, isFetching, error, data, refetch } = useQuery({
     queryKey: [endpoint, searchTerm, limit, currentPage, sort, extendedParams],
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       const res = await mainInstance.get(
         `${endpoint}?search=${searchTerm}&limit=${limit}&page=${currentPage}&sort=${sort}${extendedParams ? `&${extendedParams}` : ''}`,
+        { signal },
       );
       return res.data;
     },

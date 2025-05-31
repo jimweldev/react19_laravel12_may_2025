@@ -1,4 +1,5 @@
-import { FaChartArea, FaUsers, FaUserShield } from 'react-icons/fa6';
+import { FaCogs } from 'react-icons/fa';
+import { FaChartArea, FaUsers } from 'react-icons/fa6';
 import { type SidebarGroup } from '@/templates/main/_components/app-sidebar';
 import MainTemplate from '@/templates/main/main-template';
 
@@ -19,9 +20,9 @@ const AdminLayout = () => {
           icon: FaUsers,
         },
         {
-          title: 'RBAC',
-          url: '/admin/rbac',
-          icon: FaUserShield,
+          title: 'System',
+          url: '/admin/system',
+          icon: FaCogs,
         },
       ],
     },

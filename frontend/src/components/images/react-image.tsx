@@ -1,4 +1,5 @@
 import { Img } from 'react-image';
+import fallbackImage from '@/assets/images/no-image-available.jpg';
 
 type ReactImageProps = {
   className?: string;
@@ -11,7 +12,7 @@ const ReactImage = ({
   className = '',
   src,
   alt = 'Image not found',
-  unloaderSrc = 'https://i.pinimg.com/736x/96/69/72/966972471970ab014cdb7cb1529118dd.jpg',
+  unloaderSrc = fallbackImage,
 }: ReactImageProps) => {
   return (
     <Img

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FaEdit } from 'react-icons/fa';
-import { FaBoxArchive, FaFilter } from 'react-icons/fa6';
+import { FaBoxArchive, FaFilter, FaShield } from 'react-icons/fa6';
+import type { RbacUserRole } from '@/_types/rbac-user-role';
 import { type User } from '@/_types/user';
 import fallbackImage from '@/assets/images/default-avatar.png';
 import DataTable, {
@@ -13,6 +14,7 @@ import InputGroup from '@/components/forms/input-group';
 import Fancybox from '@/components/images/fancy-box';
 import ReactImage from '@/components/images/react-image';
 import UsersSelect from '@/components/react-select/users-select';
+import ProfileToolTip from '@/components/tool-tips/profile-tool-tip';
 import ToolTip from '@/components/tool-tips/tool-tip';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -32,6 +34,7 @@ import CreateUser from './_components/create-user';
 import DeleteUser from './_components/delete-user';
 import ImportUsers from './_components/import-users';
 import UpdateUser from './_components/update-user';
+import UpdateUserRoles from './_components/update-user-roles';
 
 const ActiveUsersTab = () => {
   // PAGINATION
@@ -55,8 +58,11 @@ const ActiveUsersTab = () => {
       column: 'email',
     },
     {
-      label: 'Role',
+      label: 'Admin',
       column: 'is_admin',
+    },
+    {
+      label: 'Roles',
     },
     {
       label: 'Actions',
@@ -102,6 +108,8 @@ const ActiveUsersTab = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [openCreateUser, setOpenCreateUser] = useState<boolean>(false);
   const [openUpdateUser, setOpenUpdateUser] = useState<boolean>(false);
+  const [openUpdateUserRoles, setOpenUpdateUserRoles] =
+    useState<boolean>(false);
   const [openDeleteUser, setOpenDeleteUser] = useState<boolean>(false);
   const [openImportUsers, setOpenImportUsers] = useState<boolean>(false);
   const [openFilterUsers, setOpenFilterUsers] = useState<boolean>(false);
@@ -138,7 +146,7 @@ const ActiveUsersTab = () => {
     },
     {
       label: 'Role',
-      column: 'is_admin',
+      column: 'rbac_role.label',
       element: (value, onChange) => (
         <Select
           value={typeof value === 'string' ? value : ''}
@@ -148,8 +156,8 @@ const ActiveUsersTab = () => {
             <SelectValue placeholder="Select Role" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="1">Admin</SelectItem>
-            <SelectItem value="0">User</SelectItem>
+            <SelectItem value="Manager">Manager</SelectItem>
+            <SelectItem value="Hatdog">Hatdog</SelectItem>
           </SelectContent>
         </Select>
       ),
@@ -190,24 +198,41 @@ const ActiveUsersTab = () => {
                               user.avatar,
                               fallbackImage,
                             )}
+                            unloaderSrc={fallbackImage}
                           />
                         </div>
                       </a>
                       {/* name */}
                       <div>
-                        <h6 className="font-medium">
-                          {formatName(user, 'semifull')}
-                        </h6>
+                        <ProfileToolTip userId={user.id}>
+                          <h6 className="font-medium">
+                            {formatName(user, 'semifull')}
+                          </h6>
+                        </ProfileToolTip>
                       </div>
                     </div>
                   </TableCell>
                   {/* email */}
                   <TableCell>{user.email}</TableCell>
-                  {/* role */}
+                  {/* admin */}
                   <TableCell>
-                    <Badge variant={user.is_admin ? 'success' : 'default'}>
-                      {user.is_admin ? 'Admin' : 'User'}
+                    <Badge variant={user.is_admin ? 'default' : 'secondary'}>
+                      {user.is_admin ? 'Yes' : 'No'}
                     </Badge>
+                  </TableCell>
+                  {/* roles */}
+                  <TableCell>
+                    <div className="flex flex-wrap items-center gap-1">
+                      {user?.rbac_user_roles?.length === 0 ? (
+                        <Badge variant="secondary">No roles</Badge>
+                      ) : (
+                        <div className="flex flex-wrap items-center gap-1">
+                          {user?.rbac_user_roles?.map((role: RbacUserRole) => (
+                            <Badge key={role.id}>{role.rbac_role?.label}</Badge>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </TableCell>
                   {/* actions */}
                   <TableCell>
@@ -223,6 +248,19 @@ const ActiveUsersTab = () => {
                           size="xs"
                         >
                           <FaEdit />
+                        </Button>
+                      </ToolTip>
+                      {/* edit */}
+                      <ToolTip content="Update Roles">
+                        <Button
+                          variant="warning"
+                          onClick={() => {
+                            setSelectedUser(user);
+                            setOpenUpdateUserRoles(true);
+                          }}
+                          size="xs"
+                        >
+                          <FaShield />
                         </Button>
                       </ToolTip>
                       {/* archive */}
@@ -258,6 +296,14 @@ const ActiveUsersTab = () => {
         setSelectedItem={setSelectedUser}
         open={openUpdateUser}
         setOpen={setOpenUpdateUser}
+        refetch={usersPagination.refetch}
+      />
+      {/* update user roles */}
+      <UpdateUserRoles
+        selectedItem={selectedUser}
+        setSelectedItem={setSelectedUser}
+        open={openUpdateUserRoles}
+        setOpen={setOpenUpdateUserRoles}
         refetch={usersPagination.refetch}
       />
       {/* modal - delete */}

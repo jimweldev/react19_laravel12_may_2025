@@ -5,6 +5,7 @@ import { FaCamera } from 'react-icons/fa6';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import useAuthUserStore from '@/_stores/auth-user-store';
+import fallbackImage from '@/assets/images/default-avatar.png';
 import ReactImage from '@/components/images/react-image';
 import PageHeader from '@/components/typography/page-header';
 import { Button } from '@/components/ui/button';
@@ -104,7 +105,8 @@ const ProfilePage = () => {
                     <ReactImage
                       className="pointer-events-none size-full object-cover"
                       src={`${import.meta.env.VITE_STORAGE_BASE_URL}/avatars/${user?.avatar}`}
-                      // fallback={fallbackImage}
+                      alt="Avatar"
+                      unloaderSrc={fallbackImage}
                     />
                   </div>
                   {/* avatar upload button */}

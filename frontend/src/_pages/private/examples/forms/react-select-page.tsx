@@ -115,11 +115,12 @@ const ReactSelectPage = () => {
             <FormField
               control={form.control}
               name="user"
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <FormItem className="col-span-12">
                   <FormLabel>User</FormLabel>
                   <FormControl>
                     <UsersSelect
+                      className={\`\${fieldState.invalid ? 'invalid' : ''}\`}
                       placeholder="Select user"
                       value={field.value}
                       onChange={(value: ReactSelectOption) => {
@@ -199,11 +200,12 @@ const ReactSelectPage = () => {
             <FormField
               control={form.control}
               name="user"
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <FormItem className="col-span-12">
                   <FormLabel>User</FormLabel>
                   <FormControl>
                     <UsersSelect
+                      className={\`\${fieldState.invalid ? 'invalid' : ''}\`}
                       placeholder="Select user"
                       value={field.value}
                       onChange={(value: ReactSelectOption) => {
@@ -242,7 +244,7 @@ export default ReactSelectPage;
         code={codeStringSingle}
         lineNumbers={[
           48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64,
-          65, 66, 67, 68, 69,
+          65, 66, 67, 68, 69, 70,
         ]}
       >
         <Form {...formSingle}>
@@ -251,11 +253,12 @@ export default ReactSelectPage;
               <FormField
                 control={formSingle.control}
                 name="user"
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem className="col-span-12">
                     <FormLabel>User</FormLabel>
                     <FormControl>
                       <UsersSelect
+                        className={`${fieldState.invalid ? 'invalid' : ''}`}
                         placeholder="Select user"
                         value={field.value}
                         onChange={field.onChange}
@@ -279,7 +282,7 @@ export default ReactSelectPage;
         code={codeStringMultiple}
         lineNumbers={[
           48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64,
-          65, 66, 67, 68, 69,
+          65, 66, 67, 68, 69, 70,
         ]}
       >
         <Form {...formMultiple}>
@@ -288,11 +291,12 @@ export default ReactSelectPage;
               <FormField
                 control={formMultiple.control}
                 name="users"
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem className="col-span-12">
                     <FormLabel>Users</FormLabel>
                     <FormControl>
                       <UsersSelect
+                        className={`${fieldState.invalid ? 'invalid' : ''}`}
                         placeholder="Select users"
                         isMulti
                         closeMenuOnSelect={false}

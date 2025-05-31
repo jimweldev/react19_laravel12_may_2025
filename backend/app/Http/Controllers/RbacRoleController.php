@@ -158,10 +158,10 @@ class RbacRoleController extends Controller {
             $page = $request->input('page', 1);
             QueryHelper::applyLimitAndOffset($query, $limit, $page);
 
-            $users = $query->get();
+            $records = $query->get();
 
             return response()->json([
-                'records' => $users,
+                'records' => $records,
                 'info' => [
                     'total' => $total,
                     'pages' => ceil($total / $limit),

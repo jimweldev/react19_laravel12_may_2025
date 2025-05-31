@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RbacPermissionController;
 use App\Http\Controllers\RbacRoleController;
 use App\Http\Controllers\SelectController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\SystemGlobalDropdownController;
+use App\Http\Controllers\SystemSettingController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/auth/login', [AuthController::class, 'loginWithEmail']);
@@ -28,9 +30,9 @@ Route::middleware('check.token')->group(function () {
 
     // user roles
     Route::get('/users/{id}/user-roles', [UserController::class, 'getUserRoles']);
-    Route::post('/users/{id}/user-roles', [UserController::class, 'addUserRoles']);
+    // Route::post('/users/{id}/user-roles', [UserController::class, 'addUserRoles']);
     Route::patch('/users/{id}/user-roles', [UserController::class, 'updateUserRoles']);
-    Route::delete('/users/{id}/user-roles', [UserController::class, 'deleteUserRoles']);
+    // Route::delete('/users/{id}/user-roles', [UserController::class, 'deleteUserRoles']);
 
     // archived users
     Route::get('/users/{id}/archived', [UserController::class, 'getArchivedUser']);
@@ -51,8 +53,18 @@ Route::middleware('check.token')->group(function () {
     Route::get('/rbac/permissions/paginate', [RbacPermissionController::class, 'paginate']);
     Route::resource('/rbac/permissions', RbacPermissionController::class);
 
+    // SYSTEM
+    // system settings
+    Route::get('/system/settings/paginate', [SystemSettingController::class, 'paginate']);
+    Route::resource('/system/settings', SystemSettingController::class);
+
+    // system global dropdowns
+    Route::get('/system/global-dropdowns/paginate', [SystemGlobalDropdownController::class, 'paginate']);
+    Route::resource('/system/global-dropdowns', SystemGlobalDropdownController::class);
+
     // SELECT
     Route::get('/select/roles', [SelectController::class, 'getSelectRoles']);
     Route::get('/select/permissions', [SelectController::class, 'getSelectPermissions']);
     Route::get('/select/users', [SelectController::class, 'getSelectUsers']);
+    Route::get('/select/global-dropdowns', [SelectController::class, 'getSelectSystemGlobalDropdowns']);
 });

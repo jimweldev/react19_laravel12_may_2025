@@ -47,7 +47,8 @@ export interface Column {
   ) => React.ReactNode;
 }
 
-const OPERATORS = ['=', '!=', '>', '<', '>=', '<='] as const;
+const OPERATORS = ['=', '!=', '>', '<', '>=', '<=', 'like'] as const;
+
 type Operator = (typeof OPERATORS)[number];
 
 const opMap: Record<Operator, string> = {
@@ -57,6 +58,7 @@ const opMap: Record<Operator, string> = {
   '<': '[lt]',
   '<=': '[lte]',
   '!=': '[neq]',
+  like: '[like]',
 };
 
 const FilterRow = ({

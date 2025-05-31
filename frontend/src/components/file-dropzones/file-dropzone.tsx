@@ -98,12 +98,14 @@ const FileDropzone = ({
                 ))
               ) : (
                 <li className="text-muted-foreground flex items-center justify-between text-xs">
-                  <h6 className="flex items-center gap-1">
-                    <Paperclip size={12} />
-                    <span>
-                      {files.name} ({(files.size / 1024).toFixed(2)} KB)
-                    </span>
-                  </h6>
+                  <div className="flex-1 overflow-hidden">
+                    <h6 className="flex items-center gap-1">
+                      <Paperclip className="flex-shrink-0" size={12} />
+                      <span className="truncate">
+                        {files.name} ({(files.size / 1024).toFixed(2)} KB)
+                      </span>
+                    </h6>
+                  </div>
                   <button
                     className="rounded p-1 hover:bg-red-100 hover:text-red-500"
                     type="button"

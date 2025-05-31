@@ -5,7 +5,7 @@ export const getImageUrl = (
   image?: string,
   fallback: string = fallbackImage,
 ): string => {
-  if (!image) return fallback || '';
+  if (!image) return fallback;
 
   return `${baseUrl}/${image}`;
 };
