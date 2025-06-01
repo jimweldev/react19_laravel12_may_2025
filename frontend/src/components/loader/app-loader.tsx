@@ -1,5 +1,5 @@
-import appLogo from '@/assets/images/app-logo.jpg';
-import logoLong from '@/assets/images/company-logo-long.png';
+import appLogo from '/images/app-logo.jpg';
+import logoLong from '/images/company-logo-long.png';
 
 const AppLoader = () => {
   return (

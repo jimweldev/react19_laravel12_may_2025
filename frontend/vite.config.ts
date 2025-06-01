@@ -20,8 +20,8 @@ export default defineConfig(({ mode }) => {
           short_name: env.VITE_APP_NAME || 'AwesomeApp',
           description:
             env.VITE_APP_DESCRIPTION || 'My Awesome App using Vite and PWA',
-          theme_color: '#ffffff',
-          background_color: '#ffffff',
+          theme_color: '#2e2d30',
+          background_color: '#2e2d30',
           display: 'standalone',
           orientation: 'portrait',
           start_url: '/',
