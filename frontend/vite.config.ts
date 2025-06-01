@@ -47,6 +47,11 @@ export default defineConfig(({ mode }) => {
         },
         workbox: {
           maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB
+          globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg}'],
+          additionalManifestEntries: [
+            { url: '/images/app-logo.jpg', revision: null },
+            { url: '/images/company-logo-long.png', revision: null },
+          ],
         },
         devOptions: {
           enabled: mode !== 'production',
