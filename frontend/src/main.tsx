@@ -7,6 +7,7 @@ import AppLoader from './components/loader/app-loader.tsx';
 import { Toaster } from './components/ui/sonner.tsx';
 import { TooltipProvider } from './components/ui/tooltip.tsx';
 import FontSizeProvider from './providers/font-size-provider.tsx';
+import NetworkProvider from './providers/network-provider.tsx';
 import ThemeProvider from './providers/theme-provider.tsx';
 
 const App = lazy(() => import('./App.tsx'));
@@ -24,12 +25,14 @@ createRoot(document.getElementById('root')!).render(
     <Suspense fallback={<AppLoader />}>
       <GoogleOAuthProvider clientId="264357646431-h94qfkhietkh62c234do423160s9nd45.apps.googleusercontent.com">
         <QueryClientProvider client={queryClient}>
-          <TooltipProvider>
-            <App />
-            <Toaster expand={true} />
-            <ThemeProvider />
-            <FontSizeProvider />
-          </TooltipProvider>
+          <NetworkProvider>
+            <TooltipProvider>
+              <App />
+              <Toaster expand={true} />
+              <ThemeProvider />
+              <FontSizeProvider />
+            </TooltipProvider>
+          </NetworkProvider>
         </QueryClientProvider>
       </GoogleOAuthProvider>
     </Suspense>

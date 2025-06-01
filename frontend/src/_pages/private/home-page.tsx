@@ -1,3 +1,4 @@
+import InstallPWAButton from '@/components/pwa/install-pwa-button';
 import PageHeader from '@/components/typography/page-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardBody } from '@/components/ui/card';
@@ -7,6 +8,8 @@ const HomePage = () => {
   return (
     <>
       <PageHeader className="mb-3">Home</PageHeader>
+
+      <InstallPWAButton />
 
       <div className="grid grid-cols-12 gap-3">
         <Card className="col-span-12 md:col-span-6">
