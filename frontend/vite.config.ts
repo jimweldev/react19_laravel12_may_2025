@@ -45,11 +45,15 @@ export default defineConfig(({ mode }) => {
             },
           ],
         },
+        workbox: {
+          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB
+        },
         devOptions: {
           enabled: true,
         },
       }),
     ],
+
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
