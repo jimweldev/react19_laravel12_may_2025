@@ -1,56 +1,55 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-let deferredPrompt: BeforeInstallPromptEvent | null = null;
-
-// Define the missing BeforeInstallPromptEvent interface
-interface BeforeInstallPromptEvent extends Event {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
-}
-
-export default function InstallPWAButton() {
-  const [isInstallable, setIsInstallable] = useState(false);
+const InstallPWAButton = () => {
+  const [deferredPrompt, setDeferredPrompt] =
+    useState<BeforeInstallPromptEvent | null>(null);
+  const [isAppInstalled, setIsAppInstalled] = useState(false);
 
   useEffect(() => {
-    const handler = (e: Event) => {
-      // Type assertion to BeforeInstallPromptEvent
-      const promptEvent = e as BeforeInstallPromptEvent;
-      promptEvent.preventDefault();
-      deferredPrompt = promptEvent;
-      setIsInstallable(true);
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
     };
 
-    window.addEventListener('beforeinstallprompt', handler);
+    const handleAppInstalled = () => {
+      setIsAppInstalled(true);
+      setDeferredPrompt(null);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
 
     return () => {
-      window.removeEventListener('beforeinstallprompt', handler);
+      window.removeEventListener(
+        'beforeinstallprompt',
+        handleBeforeInstallPrompt,
+      );
+      window.removeEventListener('appinstalled', handleAppInstalled);
     };
   }, []);
 
   const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
-
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-
-    if (outcome === 'accepted') {
-      console.log('PWA installation accepted');
-    } else {
-      console.log('PWA installation dismissed');
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setDeferredPrompt(null);
+      }
     }
-
-    deferredPrompt = null;
-    setIsInstallable(false);
   };
 
-  return isInstallable ? (
-    <button
-      onClick={handleInstallClick}
-      className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-    >
-      Install App
-    </button>
-  ) : (
-    <div>not installable</div>
+  return (
+    <div>
+      {!isAppInstalled && deferredPrompt && (
+        <button
+          onClick={handleInstallClick}
+          className="rounded bg-blue-600 p-2 text-white"
+        >
+          Install App
+        </button>
+      )}
+    </div>
   );
-}
+};
+
+export default InstallPWAButton;
