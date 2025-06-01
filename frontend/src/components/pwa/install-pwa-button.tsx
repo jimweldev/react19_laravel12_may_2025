@@ -1,13 +1,22 @@
 import { usePWAInstall } from 'react-use-pwa-install';
+import { toast } from 'sonner';
+import ToolTip from '../tool-tips/tool-tip';
+import { Button } from '../ui/button';
 
 const InstallPWAButton = () => {
   const install = usePWAInstall();
 
-  return (
-    <header>
-      <h1>My app</h1>
-      {install && <button onClick={install}>Install</button>}
-    </header>
+  return install ? (
+    <Button onClick={install}>Install</Button>
+  ) : (
+    <Button
+      onClick={() => {
+        toast.info(`You can install this app from the browser menu: "Add to Home
+      Screen"`);
+      }}
+    >
+      Install
+    </Button>
   );
 };
 
