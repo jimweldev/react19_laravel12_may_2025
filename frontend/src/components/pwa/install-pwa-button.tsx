@@ -1,13 +1,21 @@
 import { useEffect, useState } from 'react';
 
-const InstallPWAButton: React.FC = () => {
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+// Define the custom event interface
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
+}
+
+const InstallPWAButton = () => {
+  const [deferredPrompt, setDeferredPrompt] =
+    useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
 
   useEffect(() => {
-    const handler = (e: any) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
+    const handler = (e: Event) => {
+      const event = e as BeforeInstallPromptEvent;
+      event.preventDefault();
+      setDeferredPrompt(event);
     };
 
     window.addEventListener('beforeinstallprompt', handler);

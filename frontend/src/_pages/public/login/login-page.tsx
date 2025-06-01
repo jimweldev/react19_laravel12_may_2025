@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import useAuthUserStore from '@/_stores/auth-user-store';
+import InstallPWAButton from '@/components/pwa/install-pwa-button';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -90,6 +91,8 @@ const LoginPage = () => {
               Enter your credentials to access your account
             </p>
           </div>
+
+          <InstallPWAButton />
 
           {/* Form component */}
           <Form {...form}>
