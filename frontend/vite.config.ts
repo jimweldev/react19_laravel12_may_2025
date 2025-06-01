@@ -49,7 +49,7 @@ export default defineConfig(({ mode }) => {
           maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB
         },
         devOptions: {
-          enabled: true,
+          enabled: mode !== 'production',
         },
       }),
     ],
