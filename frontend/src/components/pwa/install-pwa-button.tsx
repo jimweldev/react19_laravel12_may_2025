@@ -1,51 +1,51 @@
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
-// Define the custom event interface
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
+  userChoice: Promise<{
+    outcome: 'accepted' | 'dismissed';
+    platform: string;
+  }>;
 }
 
-const InstallPWAButton = () => {
+const InstallPWAButton: React.FC = () => {
   const [deferredPrompt, setDeferredPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
-  const [isInstalled, setIsInstalled] = useState(false);
 
   useEffect(() => {
-    const handler = (e: Event) => {
-      const event = e as BeforeInstallPromptEvent;
-      event.preventDefault();
-      setDeferredPrompt(event);
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
     };
 
-    window.addEventListener('beforeinstallprompt', handler);
-
-    window.addEventListener('appinstalled', () => {
-      setIsInstalled(true);
-      setDeferredPrompt(null);
-    });
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
     return () => {
-      window.removeEventListener('beforeinstallprompt', handler);
+      window.removeEventListener(
+        'beforeinstallprompt',
+        handleBeforeInstallPrompt,
+      );
     };
   }, []);
 
-  const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
-
-    deferredPrompt.prompt();
-    const choiceResult = await deferredPrompt.userChoice;
-    if (choiceResult.outcome === 'accepted') {
-      setIsInstalled(true);
+  const handleInstall = () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(choiceResult => {
+        if (choiceResult.outcome === 'accepted') {
+          toast.success('Accepted');
+        } else {
+          toast.error('Rejected');
+        }
+      });
+      setDeferredPrompt(null);
+    } else {
+      toast.success('Clicked');
     }
-    setDeferredPrompt(null);
   };
 
-  if (isInstalled || !deferredPrompt) {
-    return null; // hide button if installed or no prompt available
-  }
-
-  return <button onClick={handleInstallClick}>Install App</button>;
+  return <button onClick={handleInstall}>Install App</button>;
 };
 
 export default InstallPWAButton;
