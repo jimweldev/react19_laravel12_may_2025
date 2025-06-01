@@ -1,6 +1,5 @@
 import { usePWAInstall } from 'react-use-pwa-install';
 import { toast } from 'sonner';
-import ToolTip from '../tool-tips/tool-tip';
 import { Button } from '../ui/button';
 
 const InstallPWAButton = () => {
