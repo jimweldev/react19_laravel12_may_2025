@@ -22,13 +22,13 @@ const FormSchema = z.object({
   email: z
     .string()
     .min(1, {
-      message: 'Required.',
+      message: 'Required',
     })
     .email({
-      message: 'Invalid email address.',
+      message: 'Invalid email',
     }),
   password: z.string().min(1, {
-    message: 'Required.',
+    message: 'Required',
   }),
 });
 
