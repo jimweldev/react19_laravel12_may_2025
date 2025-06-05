@@ -2,7 +2,6 @@ import { useRef, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import { toast } from 'sonner';
 import useAuthUserStore from '@/_stores/auth-user-store';
-// import '@/assets/styles/theme-toggle.css';
 import InputGroup from '@/components/forms/input-group';
 import ImageCropper from '@/components/images/image-cropper';
 import { Button } from '@/components/ui/button';
@@ -25,24 +24,15 @@ interface UploadAvatarProps {
 }
 
 const UploadAvatar = ({ open, setOpen }: UploadAvatarProps) => {
-  // STORES
-  // store - auth user
   const { user, setUser } = useAuthUserStore();
 
-  // FILE
-  // file - reference
   const fileImageRef = useRef<HTMLInputElement>(null);
 
-  // IMAGE
-  // image - states
   const [imageSource, setImageSource] = useState<string | null>(null);
   const [croppedImage, setCroppedImage] = useState<string | null>(null);
 
-  // FORM
-  // form - state
   const [isLoadingUploadAvatar, setIsLoadingUploadAvatar] = useState(false);
 
-  // form - submit
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -53,7 +43,6 @@ const UploadAvatar = ({ open, setOpen }: UploadAvatarProps) => {
 
     setIsLoadingUploadAvatar(true);
 
-    // prepare form data
     const formData = new FormData();
     const resizedImage = await resizeImage(croppedImage, 128, 128);
     formData.append('avatar', resizedImage);
@@ -65,7 +54,6 @@ const UploadAvatar = ({ open, setOpen }: UploadAvatarProps) => {
       {
         loading: 'Loading...',
         success: response => {
-          // update user
           setUser({ ...user!, avatar: response.data.avatar });
           return 'Success!';
         },
@@ -83,23 +71,19 @@ const UploadAvatar = ({ open, setOpen }: UploadAvatarProps) => {
     );
   };
 
-  // file - on change
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
-    // validate file type
     if (file && !file.type.match('image/jpeg|image/png')) {
       toast.error('Only jpg and png images are allowed');
       return;
     }
 
-    // set image source
     if (file) {
       setImageSource(URL.createObjectURL(file));
     }
   };
 
-  // file - on remove
   const onRemoveImage = () => {
     setImageSource(null);
     setCroppedImage(null);
@@ -117,7 +101,6 @@ const UploadAvatar = ({ open, setOpen }: UploadAvatarProps) => {
       }}
     >
       <DialogContent>
-        {/* upload form */}
         <form onSubmit={onSubmit}>
           <DialogHeader>
             <DialogTitle>Upload Avatar</DialogTitle>
@@ -125,14 +108,12 @@ const UploadAvatar = ({ open, setOpen }: UploadAvatarProps) => {
           </DialogHeader>
 
           <DialogBody className="space-y-3">
-            {/* image cropper */}
             <ImageCropper
               imageSource={imageSource}
               onCropComplete={setCroppedImage}
               aspectRatio={1 / 1}
             />
 
-            {/* file input */}
             <InputGroup>
               <Input
                 ref={fileImageRef}
@@ -142,7 +123,7 @@ const UploadAvatar = ({ open, setOpen }: UploadAvatarProps) => {
                 inputSize="sm"
                 onChange={onFileChange}
               />
-              {/* remove button */}
+
               <Button variant="destructive" size="sm" onClick={onRemoveImage}>
                 <FaTimes />
               </Button>
@@ -150,7 +131,6 @@ const UploadAvatar = ({ open, setOpen }: UploadAvatarProps) => {
           </DialogBody>
 
           <DialogFooter className="flex justify-end gap-2">
-            {/* close button */}
             <Button
               variant="outline"
               onClick={() => {
@@ -160,7 +140,7 @@ const UploadAvatar = ({ open, setOpen }: UploadAvatarProps) => {
             >
               Close
             </Button>
-            {/* submit button */}
+
             <Button type="submit" disabled={isLoadingUploadAvatar}>
               Upload
             </Button>

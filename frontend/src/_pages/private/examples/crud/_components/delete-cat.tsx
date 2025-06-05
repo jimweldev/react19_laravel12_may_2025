@@ -31,14 +31,12 @@ const DeleteCat = ({
   setOpen,
   refetch,
 }: DeleteCatProps) => {
-  // QUERY
-  // query - use query hook
   const {
     data: cat,
     isFetching,
     error,
   } = useQuery<Cat>({
-    queryKey: ['cats', 'delete-cat', selectedItem?.id],
+    queryKey: ['cats', 'delete', selectedItem?.id],
     queryFn: async ({ signal }): Promise<Cat> => {
       const res = await mainInstance.get(`/api/cats/${selectedItem?.id}`, {
         signal,
@@ -48,11 +46,8 @@ const DeleteCat = ({
     enabled: !!selectedItem && open,
   });
 
-  // FORM
-  // form - state
   const [isLoadingDeleteItem, setIsLoadingDeleteItem] = useState(false);
 
-  // form - submit
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -61,9 +56,8 @@ const DeleteCat = ({
     toast.promise(mainInstance.delete(`/api/cats/${selectedItem?.id}`), {
       loading: 'Loading...',
       success: () => {
-        // refetch
         refetch();
-        // reset
+
         setSelectedItem(null);
         setOpen(false);
         return 'Success!';
@@ -84,14 +78,13 @@ const DeleteCat = ({
       open={open}
       onOpenChange={() => {
         setOpen(false);
-        // reset selected item after animation
+
         setTimeout(() => {
           setSelectedItem(null);
         }, 200);
       }}
     >
       <DialogContent>
-        {/* delete form */}
         <form onSubmit={onSubmit}>
           {isFetching ? (
             <DialogDeleteSkeleton />
@@ -104,18 +97,17 @@ const DeleteCat = ({
                   <ErrorDialog error={error} />
                 ) : (
                   <>
-                    {/* warning icon */}
                     <CircleAlert
                       className="text-destructive mx-auto mb-4"
                       size={64}
                     />
-                    {/* title */}
+
                     <h3 className="text-center text-xl">Delete Cat</h3>
-                    {/* description */}
+
                     <p className="text-muted-foreground mb-2 text-center">
                       Are you sure you want to delete this record?
                     </p>
-                    {/* cat name */}
+
                     <h2 className="text-center text-2xl font-semibold">
                       {cat?.name}
                     </h2>
@@ -123,11 +115,10 @@ const DeleteCat = ({
                 )}
               </DialogBody>
               <DialogFooter className="flex justify-end gap-2">
-                {/* close button */}
                 <Button variant="outline" onClick={() => setOpen(false)}>
                   Close
                 </Button>
-                {/* submit button */}
+
                 <Button
                   variant="destructive"
                   type="submit"

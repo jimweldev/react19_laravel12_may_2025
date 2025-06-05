@@ -80,7 +80,7 @@ function TabsTrigger({
   ...props
 }: React.ComponentProps<typeof TabsPrimitive.Trigger> &
   VariantProps<typeof tabsTriggerVariants>) {
-  const { variant } = useContext(TabsContext); // Get the variant from context
+  const { variant } = useContext(TabsContext);
 
   return (
     <TabsPrimitive.Trigger

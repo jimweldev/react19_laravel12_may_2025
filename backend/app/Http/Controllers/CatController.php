@@ -42,15 +42,6 @@ class CatController extends Controller {
 
     public function store(Request $request) {
         try {
-            // check if record already exists
-            $recordExists = Cat::where('name', $request->input('name'))->exists();
-
-            if ($recordExists) {
-                return response()->json([
-                    'message' => 'Record already exists.',
-                ], 400);
-            }
-
             $record = Cat::create($request->all());
 
             return response()->json($record);

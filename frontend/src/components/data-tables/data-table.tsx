@@ -53,13 +53,12 @@ interface DataTableProps<T> {
   columns: DataTableColumns[];
   actions?: React.ReactNode;
   children?: React.ReactNode;
-  showRefreshButton?: boolean; // Add this new prop
+  showRefreshButton?: boolean;
   size?: 'sm' | 'md' | 'lg';
 }
 
 const DataTable = <T,>({
   pagination = {
-    // Provide default values for the pagination state
     data: { records: [], info: { total: 0, pages: 1 } },
     isLoading: false,
     isFetching: false,
@@ -76,7 +75,7 @@ const DataTable = <T,>({
   columns,
   actions,
   children,
-  showRefreshButton = true, // Default to true for backward compatibility
+  showRefreshButton = true,
   size = 'md',
 }: DataTableProps<T>) => {
   const records = pagination.data?.records || [];
@@ -88,7 +87,7 @@ const DataTable = <T,>({
   return (
     <div className="space-y-3">
       <div className="flex flex-col items-center justify-between gap-2 @xl/main:flex-row">
-        <div>{actions}</div>
+        <div className="flex flex-wrap gap-2">{actions}</div>
         <div className="flex flex-col items-center justify-between gap-2 @lg/main:flex-row">
           <Input
             placeholder="Search..."
@@ -101,44 +100,46 @@ const DataTable = <T,>({
             }}
           />
 
-          <Select
-            value={pagination.limit}
-            onValueChange={value => {
-              pagination.setLimit(value);
-              pagination.setCurrentPage(1);
-            }}
-          >
-            <SelectTrigger
-              size="sm"
-              className="@lg/main:w-[75px] @lg/main:min-w-[75px]"
+          <div className="flex gap-2">
+            <Select
+              value={pagination.limit}
+              onValueChange={value => {
+                pagination.setLimit(value);
+                pagination.setCurrentPage(1);
+              }}
             >
-              <SelectValue placeholder="Select entry" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="10">10</SelectItem>
-                <SelectItem value="25">25</SelectItem>
-                <SelectItem value="50">50</SelectItem>
-                <SelectItem value="100">100</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          {showRefreshButton ? (
-            <ToolTip content="Refresh">
-              <Button
-                variant="outline"
+              <SelectTrigger
                 size="sm"
-                onClick={pagination.refetch}
-                disabled={pagination.isFetching}
+                className="@lg/main:w-[75px] @lg/main:min-w-[75px]"
               >
-                {pagination.isFetching ? (
-                  <FaSpinner className="animate-spin" />
-                ) : (
-                  <FaArrowRotateRight />
-                )}
-              </Button>
-            </ToolTip>
-          ) : null}
+                <SelectValue placeholder="Select entry" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="25">25</SelectItem>
+                  <SelectItem value="50">50</SelectItem>
+                  <SelectItem value="100">100</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            {showRefreshButton ? (
+              <ToolTip content="Refresh">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={pagination.refetch}
+                  disabled={pagination.isFetching}
+                >
+                  {pagination.isFetching ? (
+                    <FaSpinner className="animate-spin" />
+                  ) : (
+                    <FaArrowRotateRight />
+                  )}
+                </Button>
+              </ToolTip>
+            ) : null}
+          </div>
         </div>
       </div>
 

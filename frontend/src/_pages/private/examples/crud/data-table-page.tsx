@@ -17,32 +17,24 @@ import DeleteCat from './_components/delete-cat';
 import UpdateCat from './_components/update-cat';
 
 const DataTablePage = () => {
-  // PAGINATION
-  // pagination - use pagination hook
   const catsPagination = usePagination('/api/cats/paginate', 'id');
 
-  // pagination - actions
   const Actions = (
-    <div className="space-x-2">
-      <Button
-        size="sm"
-        onClick={() => {
-          setOpenCreateCat(true);
-        }}
-      >
-        Create
-      </Button>
-    </div>
+    <Button
+      size="sm"
+      onClick={() => {
+        setOpenCreateCat(true);
+      }}
+    >
+      Create
+    </Button>
   );
 
-  // MODAL
-  // modal - states
   const [selectedCat, setSelectedCat] = useState<Cat | null>(null);
   const [openCreateCat, setOpenCreateCat] = useState<boolean>(false);
   const [openUpdateCat, setOpenUpdateCat] = useState<boolean>(false);
   const [openDeleteCat, setOpenDeleteCat] = useState<boolean>(false);
 
-  // pagination - data table columns
   const dataTableColumns: DataTableColumns[] = [
     {
       label: 'ID',
@@ -65,34 +57,26 @@ const DataTablePage = () => {
     <>
       <PageHeader className="mb-3">Data Table</PageHeader>
 
-      {/* card */}
       <Card>
         <CardBody>
-          {/* data table component */}
           <DataTable
             actions={Actions}
             pagination={catsPagination}
             columns={dataTableColumns}
           >
-            {/* data table rows */}
             {!catsPagination.error && catsPagination.data
               ? catsPagination.data.records?.map((cat: Cat) => (
                   <TableRow key={cat.id}>
-                    {/* id */}
                     <TableCell>{cat.id}</TableCell>
 
-                    {/* name */}
                     <TableCell>{cat.name}</TableCell>
 
-                    {/* date created */}
                     <TableCell className="font-mono text-xs">
                       {getDateTimezone(cat.created_at || '', 'date_time')}
                     </TableCell>
 
-                    {/* actions */}
                     <TableCell>
                       <InputGroup size="sm">
-                        {/* edit */}
                         <ToolTip content="Edit">
                           <Button
                             variant="info"
@@ -105,7 +89,7 @@ const DataTablePage = () => {
                             <FaEdit />
                           </Button>
                         </ToolTip>
-                        {/* delete */}
+
                         <ToolTip content="Delete">
                           <Button
                             variant="destructive"
@@ -127,13 +111,12 @@ const DataTablePage = () => {
         </CardBody>
       </Card>
 
-      {/* modal - create */}
       <CreateCat
         open={openCreateCat}
         setOpen={setOpenCreateCat}
         refetch={catsPagination.refetch}
       />
-      {/* modal - update */}
+
       <UpdateCat
         selectedItem={selectedCat}
         setSelectedItem={setSelectedCat}
@@ -141,7 +124,7 @@ const DataTablePage = () => {
         setOpen={setOpenUpdateCat}
         refetch={catsPagination.refetch}
       />
-      {/* modal - delete */}
+
       <DeleteCat
         selectedItem={selectedCat}
         setSelectedItem={setSelectedCat}

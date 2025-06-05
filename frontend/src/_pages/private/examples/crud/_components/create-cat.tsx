@@ -24,7 +24,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { mainInstance } from '@/instances/main-instance';
 
-// form - form validation
 const FormSchema = z.object({
   name: z.string().min(1, {
     message: 'Required',
@@ -38,8 +37,6 @@ type CreateCatProps = {
 };
 
 const CreateCat = ({ open, setOpen, refetch }: CreateCatProps) => {
-  // FORM
-  // form - use form hook
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -47,19 +44,16 @@ const CreateCat = ({ open, setOpen, refetch }: CreateCatProps) => {
     },
   });
 
-  // form - state
   const [isLoadingCreateItem, setIsLoadingCreateItem] = useState(false);
 
-  // form - submit
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     setIsLoadingCreateItem(true);
 
     toast.promise(mainInstance.post(`/api/cats`, data), {
       loading: 'Loading...',
       success: () => {
-        // refetch
         refetch();
-        // reset
+
         form.reset();
         return 'Success!';
       },
@@ -77,7 +71,6 @@ const CreateCat = ({ open, setOpen, refetch }: CreateCatProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
-        {/* create form */}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
             <DialogHeader>
@@ -88,7 +81,6 @@ const CreateCat = ({ open, setOpen, refetch }: CreateCatProps) => {
             </DialogHeader>
             <DialogBody>
               <div className="grid grid-cols-12 gap-3">
-                {/* label input */}
                 <FormField
                   control={form.control}
                   name="name"
@@ -105,11 +97,10 @@ const CreateCat = ({ open, setOpen, refetch }: CreateCatProps) => {
               </div>
             </DialogBody>
             <DialogFooter className="flex justify-end gap-2">
-              {/* close button */}
               <Button variant="outline" onClick={() => setOpen(false)}>
                 Close
               </Button>
-              {/* submit button */}
+
               <Button type="submit" disabled={isLoadingCreateItem}>
                 Save
               </Button>

@@ -82,7 +82,7 @@ const UsersSelect = ({ ...props }) => {
         page: 1,
       }}
       components={{ Option: UserOption }}
-      shouldLoadMore={shouldLoadMore} // Use custom loading trigger
+      shouldLoadMore={shouldLoadMore}
       {...(props.isMulti && {
         filterOption: (candidate: ReactSelectOption) => {
           const selectedValues = (props.value || []).map(

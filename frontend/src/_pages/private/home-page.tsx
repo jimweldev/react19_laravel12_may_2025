@@ -1,4 +1,3 @@
-import InstallPWAButton from '@/components/pwa/install-pwa-button';
 import PageHeader from '@/components/typography/page-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardBody } from '@/components/ui/card';
@@ -9,8 +8,6 @@ const HomePage = () => {
     <>
       <PageHeader className="mb-3">Home</PageHeader>
 
-      <InstallPWAButton />
-
       <div className="grid grid-cols-12 gap-3">
         <Card className="col-span-12 md:col-span-6">
           <CardBody>
@@ -18,7 +15,6 @@ const HomePage = () => {
               Implicit Admin
             </h4>
 
-            {/* Implicit Admin – admin gets all permissions automatically */}
             <div className="flex flex-wrap gap-3">
               {hasPermission('create-user') ? (
                 <Button>Create User</Button>
@@ -39,7 +35,6 @@ const HomePage = () => {
               Explicit‑Check Admin
             </h4>
 
-            {/* Explicit‑Check Admin – admin must still pass hasPermission() */}
             <div className="flex flex-wrap gap-3">
               {hasPermission('create-user', false) ? (
                 <Button>Create User</Button>

@@ -22,7 +22,6 @@ import { Input } from '@/components/ui/input';
 import { mainInstance } from '@/instances/main-instance';
 import UploadAvatar from './_components/upload-avatar';
 
-// form - form validation
 const FormSchema = z.object({
   email: z.string().min(1, {
     message: 'Required',
@@ -38,12 +37,8 @@ const FormSchema = z.object({
 });
 
 const ProfilePage = () => {
-  // USER
-  // user - use auth user store
   const { user, setUser } = useAuthUserStore();
 
-  // FORM
-  // form - use form hook
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -55,18 +50,15 @@ const ProfilePage = () => {
     },
   });
 
-  // form - state
   const [isLoadingUpdateProfile, setIsLoadingUpdateProfile] =
     useState<boolean>(false);
 
-  // form - submit
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     setIsLoadingUpdateProfile(true);
 
     toast.promise(mainInstance.patch(`/api/users/${user?.id}/profile`, data), {
       loading: 'Loading...',
       success: response => {
-        // update user
         setUser(response.data);
         return 'Success!';
       },
@@ -81,26 +73,20 @@ const ProfilePage = () => {
     });
   };
 
-  // MODAL
-  // modal - states
   const [openUploadAvatar, setOpenUploadAvatar] = useState<boolean>(false);
 
   return (
     <>
-      {/* header */}
       <div className="mb-3">
         <PageHeader>Profile</PageHeader>
       </div>
 
-      {/* profile form */}
       <Card className="max-w-xl">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            {/* avatar */}
             <CardHeader>
               <div className="flex justify-center">
                 <div className="relative aspect-square w-24">
-                  {/* avatar image */}
                   <div className="outline-primary border-card flex size-full items-center overflow-hidden rounded-full border-1 outline-2 select-none">
                     <ReactImage
                       className="pointer-events-none size-full object-cover"
@@ -109,7 +95,7 @@ const ProfilePage = () => {
                       unloaderSrc={fallbackImage}
                     />
                   </div>
-                  {/* avatar upload button */}
+
                   <Button
                     className="border-card absolute right-0 bottom-0 rounded-full border-2"
                     variant="default"
@@ -123,7 +109,6 @@ const ProfilePage = () => {
             </CardHeader>
             <CardBody>
               <div className="grid grid-cols-12 gap-3">
-                {/* email input */}
                 <FormField
                   control={form.control}
                   name="email"
@@ -137,7 +122,7 @@ const ProfilePage = () => {
                     </FormItem>
                   )}
                 />
-                {/* first name input */}
+
                 <FormField
                   control={form.control}
                   name="first_name"
@@ -151,7 +136,7 @@ const ProfilePage = () => {
                     </FormItem>
                   )}
                 />
-                {/* middle name input */}
+
                 <FormField
                   control={form.control}
                   name="middle_name"
@@ -165,7 +150,7 @@ const ProfilePage = () => {
                     </FormItem>
                   )}
                 />
-                {/* last name input */}
+
                 <FormField
                   control={form.control}
                   name="last_name"
@@ -179,7 +164,7 @@ const ProfilePage = () => {
                     </FormItem>
                   )}
                 />
-                {/* suffix input */}
+
                 <FormField
                   control={form.control}
                   name="suffix"
@@ -196,7 +181,6 @@ const ProfilePage = () => {
               </div>
             </CardBody>
             <CardFooter className="flex justify-end">
-              {/* submit button */}
               <Button type="submit" disabled={isLoadingUpdateProfile}>
                 Save
               </Button>
@@ -205,7 +189,6 @@ const ProfilePage = () => {
         </Form>
       </Card>
 
-      {/* modal - upload avatar */}
       <UploadAvatar open={openUploadAvatar} setOpen={setOpenUploadAvatar} />
     </>
   );

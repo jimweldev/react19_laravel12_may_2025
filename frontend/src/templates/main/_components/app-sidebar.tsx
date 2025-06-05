@@ -1,6 +1,6 @@
 import { MessageCircleQuestion } from 'lucide-react';
 import { Link, NavLink } from 'react-router';
-import appLogo from '@/assets/images/app-logo.jpg';
+import ReactImage from '@/components/images/react-image';
 import {
   Sidebar,
   SidebarContent,
@@ -50,9 +50,9 @@ const AppSidebar = ({ sidebarGroups = [], ...props }: AppSidebarProps) => {
                 className="!text-sidebar-foreground !bg-transparent"
               >
                 <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <img
+                  <ReactImage
                     className="size-full rounded-lg"
-                    src={appLogo}
+                    src="/images/app-logo.jpg"
                     alt="App Logo"
                   />
                 </div>

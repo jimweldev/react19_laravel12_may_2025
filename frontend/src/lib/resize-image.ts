@@ -15,10 +15,8 @@ export const resizeImage = (
       canvas.width = width;
       canvas.height = height;
 
-      // Draw and resize image
       ctx.drawImage(img, 0, 0, width, height);
 
-      // Convert to base64
       resolve(canvas.toDataURL('image/png'));
     };
 

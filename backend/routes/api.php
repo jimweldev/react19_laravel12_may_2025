@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CatController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MailLogController;
+use App\Http\Controllers\MailTemplateController;
 use App\Http\Controllers\RbacPermissionController;
 use App\Http\Controllers\RbacRoleController;
 use App\Http\Controllers\SelectController;
@@ -27,7 +29,8 @@ Route::middleware('check.token')->group(function () {
     Route::patch('/users/settings', [UserController::class, 'updateUserSettings']);
 
     // DASHBOARD
-    Route::get('/dashboard/admins', [DashboardController::class, 'getDashboardAdmins']);
+    Route::get('/dashboard/statistics', [DashboardController::class, 'getDashboardStatistics']);
+    Route::get('/dashboard/user-registration-stats', [DashboardController::class, 'getUserRegistrationStats']);
     Route::get('/dashboard/account-types', [DashboardController::class, 'getDashboardAccountTypes']);
 
     // user roles
@@ -61,6 +64,14 @@ Route::middleware('check.token')->group(function () {
     // system global dropdowns
     Route::get('/system/global-dropdowns/paginate', [SystemGlobalDropdownController::class, 'paginate']);
     Route::resource('/system/global-dropdowns', SystemGlobalDropdownController::class);
+
+    // mails
+    // logs
+    Route::get('/mails/logs/paginate', [MailLogController::class, 'paginate']);
+    Route::resource('/mails/logs', MailLogController::class);
+    // templates
+    Route::get('/mails/templates/paginate', [MailTemplateController::class, 'paginate']);
+    Route::resource('/mails/templates', MailTemplateController::class);
 
     // EXAMPLES
     // cats

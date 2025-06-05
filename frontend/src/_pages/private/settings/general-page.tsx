@@ -83,7 +83,6 @@ const GeneralPage = () => {
     },
   });
 
-  // form - state
   const [isLoadingUpdateProfile, setIsLoadingUpdateProfile] =
     useState<boolean>(false);
 
@@ -97,7 +96,6 @@ const GeneralPage = () => {
       success: response => {
         setUser(response.data);
 
-        // Add save logic here
         setTheme(response.data.user_setting.theme);
         setFontSize(response.data.user_setting.font_size);
         setTimezone(response.data.user_setting.timezone);
@@ -131,7 +129,6 @@ const GeneralPage = () => {
           <Card className="max-w-md">
             <CardBody>
               <div className="grid grid-cols-12 gap-3">
-                {/* Theme Selection */}
                 <FormField
                   control={form.control}
                   name="theme"
@@ -159,7 +156,6 @@ const GeneralPage = () => {
                   )}
                 />
 
-                {/* Font Size Selection */}
                 <FormField
                   control={form.control}
                   name="font_size"
@@ -186,7 +182,6 @@ const GeneralPage = () => {
                   )}
                 />
 
-                {/* Timezone Selection */}
                 <FormField
                   control={form.control}
                   name="timezone"
@@ -206,7 +201,6 @@ const GeneralPage = () => {
                   )}
                 />
 
-                {/* Date Format */}
                 <FormField
                   control={form.control}
                   name="date_format"
@@ -242,7 +236,6 @@ const GeneralPage = () => {
                   )}
                 />
 
-                {/* Time Format */}
                 <FormField
                   control={form.control}
                   name="time_format"

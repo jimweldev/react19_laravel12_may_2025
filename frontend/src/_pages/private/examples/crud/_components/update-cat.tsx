@@ -28,7 +28,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { mainInstance } from '@/instances/main-instance';
 
-// form - form validation
 const FormSchema = z.object({
   name: z.string().min(1, {
     message: 'Required',
@@ -53,8 +52,6 @@ const UpdateCat = ({
   const title = 'Update Cat';
   const description = 'Modify the details of an existing record';
 
-  // QUERY
-  // query - use query hook
   const {
     data: cat,
     isFetching,
@@ -70,8 +67,6 @@ const UpdateCat = ({
     enabled: !!selectedItem && open,
   });
 
-  // FORM
-  // form - use form hook
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -79,10 +74,8 @@ const UpdateCat = ({
     },
   });
 
-  // form - state
   const [isLoadingUpdateItem, setIsLoadingUpdateItem] = useState(false);
 
-  // form - set default values
   useEffect(() => {
     if (cat) {
       form.reset({
@@ -91,14 +84,12 @@ const UpdateCat = ({
     }
   }, [cat, form]);
 
-  // form - submit
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     setIsLoadingUpdateItem(true);
 
     toast.promise(mainInstance.patch(`/api/cats/${selectedItem?.id}`, data), {
       loading: 'Loading...',
       success: () => {
-        // refetch
         refetch();
         return 'Success!';
       },
@@ -118,14 +109,13 @@ const UpdateCat = ({
       open={open}
       onOpenChange={() => {
         setOpen(false);
-        // reset selected item after animation
+
         setTimeout(() => {
           setSelectedItem(null);
         }, 200);
       }}
     >
       <DialogContent>
-        {/* loading skeleton */}
         {isFetching ? (
           <DialogSkeleton
             title={title}
@@ -134,7 +124,6 @@ const UpdateCat = ({
           />
         ) : (
           <Form {...form}>
-            {/* update form */}
             <form onSubmit={form.handleSubmit(onSubmit)} autoComplete="off">
               <DialogHeader>
                 <DialogTitle>{title}</DialogTitle>
@@ -146,7 +135,6 @@ const UpdateCat = ({
                   <ErrorDialog error={error} />
                 ) : (
                   <div className="grid grid-cols-12 gap-3">
-                    {/* label input */}
                     <FormField
                       control={form.control}
                       name="name"
@@ -165,11 +153,10 @@ const UpdateCat = ({
               </DialogBody>
 
               <DialogFooter className="flex justify-end gap-2">
-                {/* close button */}
                 <Button variant="outline" onClick={() => setOpen(false)}>
                   Close
                 </Button>
-                {/* submit button */}
+
                 <Button type="submit" disabled={isLoadingUpdateItem || !!error}>
                   Save
                 </Button>

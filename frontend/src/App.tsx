@@ -5,9 +5,10 @@ import MainLayout from './_layouts/private/_components/main-layout';
 import SettingsLayout from './_layouts/private/_components/settings-layout';
 import PrivateLayout from './_layouts/private/private-layout';
 import PublicLayout from './_layouts/public/public-layout';
-import DashboardPage from './_pages/private/admin/dashboard/dashboard-page';
-import SystemPage from './_pages/private/admin/system/system-page';
-import UsersPage from './_pages/private/admin/users/users-page';
+import DashboardPage from './_pages/private/admin/admin/dashboard/dashboard-page';
+import SystemPage from './_pages/private/admin/admin/system/system-page';
+import UsersPage from './_pages/private/admin/admin/users/users-page';
+import MailsPage from './_pages/private/admin/logs/mails/mails-page';
 import DataTablePage from './_pages/private/examples/crud/data-table-page';
 import GlobalDropdownPage from './_pages/private/examples/forms/global-dropdown-page';
 import InputPage from './_pages/private/examples/forms/input-page';
@@ -24,12 +25,10 @@ import useAuthUserStore from './_stores/auth-user-store';
 const App = () => {
   const { token, user } = useAuthUserStore();
 
-  // Private routes
   const privateRoutes = [
     {
       element: <PrivateLayout />,
       children: [
-        //Account Type = Main
         ...(user?.account_type === 'Main'
           ? [
               ...(user?.is_admin
@@ -63,13 +62,27 @@ const App = () => {
                         },
                         {
                           path: 'system',
-                          element: <SystemPage />,
                           children: [
                             {
                               path: '',
+                              element: <SystemPage />,
                             },
                             {
                               path: ':systemTab',
+                              element: <SystemPage />,
+                            },
+                          ],
+                        },
+                        {
+                          path: 'mails',
+                          children: [
+                            {
+                              path: '',
+                              element: <MailsPage />,
+                            },
+                            {
+                              path: ':mailTab',
+                              element: <MailsPage />,
                             },
                           ],
                         },
@@ -142,7 +155,6 @@ const App = () => {
             ]
           : []),
 
-        //Account Type = Guest
         ...(user?.account_type === 'Guest'
           ? [
               {
@@ -188,7 +200,6 @@ const App = () => {
     },
   ];
 
-  // Public routes
   const publicRoutes = [
     {
       element: <PublicLayout />,

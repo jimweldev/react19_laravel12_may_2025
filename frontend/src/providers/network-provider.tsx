@@ -21,7 +21,7 @@ const NetworkProvider = ({ children }: NetworkProviderProps) => {
 
       const timer = setTimeout(() => {
         setShowBackOnline(false);
-      }, 5000); // Show for 2 seconds
+      }, 5000);
 
       return () => clearTimeout(timer);
     }
@@ -31,7 +31,6 @@ const NetworkProvider = ({ children }: NetworkProviderProps) => {
     <>
       {children}
 
-      {/* Offline Banner */}
       <div
         className={`fixed bottom-0 left-0 z-50 w-full transform bg-black py-1 text-center text-xs text-white shadow-md transition-all duration-500 ${
           !networkStatus.online
@@ -42,7 +41,6 @@ const NetworkProvider = ({ children }: NetworkProviderProps) => {
         You are currently offline
       </div>
 
-      {/* Back Online Banner */}
       <div
         className={`fixed bottom-0 left-0 z-50 w-full transform bg-green-600 py-1 text-center text-xs text-white shadow-md transition-all duration-500 ${
           showBackOnline

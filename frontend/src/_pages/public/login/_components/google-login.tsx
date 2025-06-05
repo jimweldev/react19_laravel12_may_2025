@@ -7,15 +7,10 @@ import { Button } from '@/components/ui/button';
 import { mainInstance } from '@/instances/main-instance';
 
 const GoogleLogin = () => {
-  // STORES
-  // store - auth user
   const { setAuthUser } = useAuthUserStore();
 
-  // FORM
-  // form - state
   const [isLoading, setIsLoading] = useState(false);
 
-  // form - submit
   const login = useGoogleLogin({
     onSuccess: tokenResponse => {
       setIsLoading(true);
@@ -45,7 +40,6 @@ const GoogleLogin = () => {
 
   return (
     <>
-      {/* google login button */}
       <Button
         variant="outline"
         className="w-full"

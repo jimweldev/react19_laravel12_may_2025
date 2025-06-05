@@ -18,26 +18,26 @@ import {
 import { Input } from '@/components/ui/input';
 import { mainInstance } from '@/instances/main-instance';
 
-// form - form validation
-const FormSchema = z.object({
-  current_password: z.string().min(1, {
-    message: 'Required',
-  }),
-  new_password: z.string().min(1, {
-    message: 'Required',
-  }),
-  confirm_new_password: z.string().min(1, {
-    message: 'Required',
-  }),
-});
+const FormSchema = z
+  .object({
+    current_password: z.string().min(1, {
+      message: 'Required',
+    }),
+    new_password: z.string().min(1, {
+      message: 'Required',
+    }),
+    confirm_new_password: z.string().min(1, {
+      message: 'Required',
+    }),
+  })
+  .refine(data => data.new_password === data.confirm_new_password, {
+    message: 'Passwords do not match',
+    path: ['confirm_new_password'],
+  });
 
 const PasswordPage = () => {
-  // STORES
-  // store - auth user
   const { user } = useAuthUserStore();
 
-  // FORM
-  // form - use form hook
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -47,11 +47,9 @@ const PasswordPage = () => {
     },
   });
 
-  // form - state
   const [isLoadingChangePassword, setIsLoadingChangePassword] =
     useState<boolean>(false);
 
-  // form - submit
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     setIsLoadingChangePassword(true);
 
@@ -60,7 +58,6 @@ const PasswordPage = () => {
       {
         loading: 'Loading...',
         success: () => {
-          // reset
           form.reset();
           return 'Success!';
         },
@@ -80,18 +77,15 @@ const PasswordPage = () => {
 
   return (
     <>
-      {/* header */}
       <div className="mb-3">
         <PageHeader>Password</PageHeader>
       </div>
 
-      {/* password form */}
       <Card className="max-w-md">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <CardBody>
               <div className="grid grid-cols-12 gap-3">
-                {/* current password input */}
                 <FormField
                   control={form.control}
                   name="current_password"
@@ -105,7 +99,7 @@ const PasswordPage = () => {
                     </FormItem>
                   )}
                 />
-                {/* new password input */}
+
                 <FormField
                   control={form.control}
                   name="new_password"
@@ -119,7 +113,7 @@ const PasswordPage = () => {
                     </FormItem>
                   )}
                 />
-                {/* confirm new password input */}
+
                 <FormField
                   control={form.control}
                   name="confirm_new_password"
@@ -136,7 +130,6 @@ const PasswordPage = () => {
               </div>
             </CardBody>
             <CardFooter className="flex justify-end">
-              {/* submit button */}
               <Button type="submit" disabled={isLoadingChangePassword}>
                 Save
               </Button>

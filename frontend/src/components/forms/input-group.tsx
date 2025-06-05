@@ -1,9 +1,10 @@
 interface InputGroupProps {
+  className?: string;
   children: React.ReactNode;
   size?: 'sm' | 'md' | 'lg';
 }
 
-const InputGroup = ({ children, size = 'md' }: InputGroupProps) => {
+const InputGroup = ({ className, children, size = 'md' }: InputGroupProps) => {
   const getClasses = (size: string) => {
     switch (size) {
       case 'sm':
@@ -17,7 +18,7 @@ const InputGroup = ({ children, size = 'md' }: InputGroupProps) => {
 
   return (
     <div
-      className={`flex [&>*]:rounded-none ${getClasses(size)} [&>*:not(:last-child)]:border-r-0`}
+      className={`${className} flex [&>*]:rounded-none ${getClasses(size)} [&>*:not(:last-child)]:border-r-0`}
     >
       {children}
     </div>

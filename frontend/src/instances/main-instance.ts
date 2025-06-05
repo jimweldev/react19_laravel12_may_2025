@@ -7,7 +7,6 @@ const mainInstance = axios.create({
   withCredentials: true,
 });
 
-// Request interceptor
 mainInstance.interceptors.request.use(
   config => {
     const { token } = useAuthUserStore.getState();
@@ -21,7 +20,6 @@ mainInstance.interceptors.request.use(
   error => Promise.reject(error),
 );
 
-// Response interceptor to handle 401 errors
 mainInstance.interceptors.response.use(
   response => response,
   async error => {
@@ -35,10 +33,8 @@ mainInstance.interceptors.response.use(
 
         const { access_token } = refreshResponse.data;
 
-        // Store the new access token
         useAuthUserStore.getState().setToken(access_token);
 
-        // Retry the original request with the new access token
         error.config.headers.Authorization = `Bearer ${access_token}`;
         return axios(error.config);
       } catch (refreshError) {

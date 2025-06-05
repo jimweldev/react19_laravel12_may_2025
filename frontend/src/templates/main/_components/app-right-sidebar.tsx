@@ -25,18 +25,15 @@ const AppRightSidebar = ({
 }: AppRightSidebarProps) => {
   const [currentTab, setCurrentTab] = useState<string>(activeTab);
 
-  // Update local state when prop changes
   useEffect(() => {
     if (activeTab) {
       setCurrentTab(activeTab);
     }
   }, [activeTab]);
 
-  // Handle tab change
   const handleTabChange = (value: string) => {
     const newTab = value;
     setCurrentTab(newTab);
-    // Also update parent state if provided
     if (setActiveTab) {
       setActiveTab(newTab);
     }

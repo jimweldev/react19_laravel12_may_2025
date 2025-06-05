@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
+import { cva, VariantProps } from 'class-variance-authority';
 import { XIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -45,11 +46,30 @@ function DialogOverlay({
   );
 }
 
+const dialogContentVariants = cva('', {
+  variants: {
+    size: {
+      sm: 'max-w-[450px]',
+      md: 'max-w-[500px]',
+      lg: 'max-w-[800px]',
+      xl: 'max-w-[1000px]',
+      '2xl': 'max-w-[1500px]',
+    },
+  },
+  defaultVariants: {
+    size: 'sm',
+  },
+});
+
 function DialogContent({
   className,
   children,
+  size,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Content>) {
+}: React.ComponentProps<typeof DialogPrimitive.Content> &
+  VariantProps<typeof dialogContentVariants> & {
+    asChild?: boolean;
+  }) {
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay>
@@ -69,13 +89,14 @@ function DialogContent({
             <DialogPrimitive.Content
               data-slot="dialog-content"
               className={cn(
-                'bg-card relative z-50 w-full max-w-[450px] rounded-lg border shadow-lg',
+                'bg-card relative z-50 w-full rounded-lg border shadow-lg',
                 'data-[state=open]:animate-in data-[state=closed]:animate-out',
                 'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
                 'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
                 'data-[state=closed]:slide-out-to-top-[48%]',
                 'data-[state=open]:slide-in-from-top-[48%]',
                 className,
+                dialogContentVariants({ size }),
               )}
               {...props}
             >

@@ -34,7 +34,6 @@ type DataTableFilterProps = {
 interface Filter {
   column: string;
   operator: Operator;
-  // support both simple strings and ReactSelect option objects
   value: string | number | { value: string; label: string } | null;
 }
 
@@ -52,7 +51,7 @@ const OPERATORS = ['=', '!=', '>', '<', '>=', '<=', 'like'] as const;
 type Operator = (typeof OPERATORS)[number];
 
 const opMap: Record<Operator, string> = {
-  '=': '', // equals → no suffix
+  '=': '',
   '>': '[gt]',
   '>=': '[gte]',
   '<': '[lt]',
@@ -78,7 +77,6 @@ const FilterRow = ({
 
   return (
     <InputGroup>
-      {/* Column */}
       <Select
         value={filter.column}
         onValueChange={v => updateFilter(index, 'column', v)}
@@ -95,7 +93,6 @@ const FilterRow = ({
         </SelectContent>
       </Select>
 
-      {/* Operator */}
       <Select
         value={filter.operator}
         onValueChange={v => updateFilter(index, 'operator', v)}
@@ -112,7 +109,6 @@ const FilterRow = ({
         </SelectContent>
       </Select>
 
-      {/* Value - using the element function from the column */}
       {col.element(filter.value, value => updateFilter(index, 'value', value))}
 
       <Button variant="destructive" onClick={() => removeFilter(index)}>
@@ -122,28 +118,24 @@ const FilterRow = ({
   );
 };
 
-// Move this outside the component
 const filtersToQueryString = (filters: Filter[]): string => {
   return filters
     .map(({ column, operator, value }) => {
-      // If value is an object (and not null), default to its `value` key
       const rawVal =
         value !== null && typeof value === 'object' && 'value' in value
           ? value.value
           : value;
 
-      // Skip if value is null, undefined, or empty string
       if (rawVal === null || rawVal === undefined || rawVal === '') {
         return null;
       }
 
-      // Encode to be safe with spaces / special chars
       const encodedVal = encodeURIComponent(String(rawVal));
 
       const suffix = opMap[operator] ?? '';
       return `${column}${suffix}=${encodedVal}`;
     })
-    .filter(Boolean) // Remove null entries (skipped empty values)
+    .filter(Boolean)
     .join('&');
 };
 
@@ -199,7 +191,7 @@ const DataTableFilter = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-[600px]">
+      <DialogContent size="lg">
         <form
           onSubmit={e => {
             e.preventDefault();
@@ -226,7 +218,6 @@ const DataTableFilter = ({
                 />
               ))}
 
-              {/* no filter */}
               {filters.length === 0 ? (
                 <Input
                   className="text-center"

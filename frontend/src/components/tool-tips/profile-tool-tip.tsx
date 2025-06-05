@@ -20,7 +20,6 @@ type ProfileToolTipProps = {
 const ProfileToolTip = ({ userId, children }: ProfileToolTipProps) => {
   const [open, setOpen] = useState(false);
 
-  // react query - get user
   const { data: user, isLoading } = useQuery<User>({
     queryKey: ['user', userId],
     queryFn: async (): Promise<User> => {
@@ -28,7 +27,7 @@ const ProfileToolTip = ({ userId, children }: ProfileToolTipProps) => {
       return res.data;
     },
     enabled: !!userId && open,
-    staleTime: 1000 * 60 * 60 * 12, // 12 hours
+    staleTime: 1000 * 60 * 60 * 12,
   });
 
   return (
@@ -79,7 +78,6 @@ const ProfileToolTip = ({ userId, children }: ProfileToolTipProps) => {
               <Separator />
 
               <div>
-                {/* no roles */}
                 {user?.rbac_user_roles?.length === 0 ? (
                   <Badge variant="secondary">No roles</Badge>
                 ) : (
