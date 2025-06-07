@@ -39,17 +39,15 @@ const GoogleLogin = () => {
   });
 
   return (
-    <>
-      <Button
-        variant="outline"
-        className="w-full"
-        disabled={isLoading}
-        onClick={() => login()}
-      >
-        <FaGoogle />
-        Continue with Google
-      </Button>
-    </>
+    <Button
+      variant="outline"
+      className="w-full"
+      disabled={isLoading}
+      onClick={() => login()}
+    >
+      <FaGoogle />
+      Continue with Google
+    </Button>
   );
 };
 
