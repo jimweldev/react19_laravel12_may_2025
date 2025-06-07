@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { FaImages } from 'react-icons/fa6';
 import { z } from 'zod';
 import InputGroup from '@/components/forms/input-group';
+import ToolTip from '@/components/tool-tips/tool-tip';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -115,9 +116,11 @@ const ReactQuillInsertImage = ({
                               {...field}
                               placeholder="https://www.example.com/image.jpg"
                             />
-                            <Button onClick={() => setOpenMyDrive(true)}>
-                              <FaImages />
-                            </Button>
+                            <ToolTip content="Choose from My Drive">
+                              <Button onClick={() => setOpenMyDrive(true)}>
+                                <FaImages />
+                              </Button>
+                            </ToolTip>
                           </InputGroup>
                         </FormControl>
                         <FormMessage />

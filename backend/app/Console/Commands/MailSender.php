@@ -84,7 +84,7 @@ class MailSender extends Command {
 
                         if ($fileContent !== false) {
                             // Attach file data with original filename
-                            $message->attachData($fileContent, basename($attachment->file_url));
+                            $message->attachData($fileContent, $attachment->file_name ?? basename($attachment->file_url));
 
                             // Free memory used by the file content
                             unset($fileContent);

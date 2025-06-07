@@ -53,7 +53,7 @@ export default defineConfig(({ mode }) => {
           ],
         },
         devOptions: {
-          enabled: mode !== 'production',
+          enabled: false,
         },
       }),
     ],

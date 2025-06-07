@@ -12,6 +12,8 @@ return new class extends Migration {
         Schema::create('mail_log_attachments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('mail_log_id')->constrained()->onDelete('cascade');
+            $table->string('file_name')->nullable();
+            $table->string('file_type');
             $table->string('file_url');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();

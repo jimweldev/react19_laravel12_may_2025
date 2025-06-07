@@ -41,7 +41,11 @@ class MailLogController extends Controller {
     public function show($id) {
         // Find the record by ID
         $record = MailLog::where('id', $id)
-            ->with('mail_template', 'mail_log_attachments')
+            ->with(
+                'user:id,first_name,middle_name,last_name,suffix',
+                'mail_template:id,content',
+                'mail_log_attachments:mail_log_id,file_name,file_type,file_url'
+            )
             ->first();
 
         if (!$record) {
