@@ -14,6 +14,9 @@ use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller {
+    /**
+     * Handle login with email and password.
+     */
     public function loginWithEmail(Request $request) {
         $userExists = User::where('email', $request->email)->first();
 
@@ -27,17 +30,16 @@ class AuthController extends Controller {
 
         $user = UserHelper::getUser($request->email);
 
-        // Get expiration values from config
+        // Set token expiration times
         $accessTokenExpiresAt = Carbon::now()->addMinutes(config('jwt.ttl'));
         $refreshTokenExpiresAt = Carbon::now()->addMinutes(config('jwt.refresh_ttl'));
 
-        // Generate access token
+        // Generate access and refresh tokens
         $accessToken = JWTAuth::customClaims([
             'exp' => $accessTokenExpiresAt->timestamp,
             'token_type' => 'access',
         ])->fromUser($user);
 
-        // Generate refresh token (longer-lived)
         $refreshToken = JWTAuth::customClaims([
             'exp' => $refreshTokenExpiresAt->timestamp,
             'token_type' => 'refresh',
@@ -46,23 +48,25 @@ class AuthController extends Controller {
         return response()->json([
             'user' => $user,
             'access_token' => $accessToken,
-        ])->cookie(
+        ], 200)->cookie(
             'refresh_token',
             $refreshToken,
             config('jwt.refresh_ttl'),
             '/',
             null,
-            config('app.env') === 'production', // secure in production
-            true, // httpOnly
+            config('app.env') === 'production',
+            true,
             false,
         );
     }
 
+    /**
+     * Handle login with Google OAuth.
+     */
     public function loginWithGoogle(Request $request) {
         /** @disregard Undefined method 'userFromToken' */
         $googleUser = Socialite::driver('google')->userFromToken($request->access_token);
 
-        // Check if the user already exists
         $user = UserHelper::getUser($googleUser->getEmail());
 
         if (!$user) {
@@ -72,17 +76,16 @@ class AuthController extends Controller {
         }
 
         try {
-            // Get expiration values from config
+            // Set token expiration times
             $accessTokenExpiresAt = Carbon::now()->addMinutes(config('jwt.ttl'));
             $refreshTokenExpiresAt = Carbon::now()->addMinutes(config('jwt.refresh_ttl'));
 
-            // Generate access token
+            // Generate access and refresh tokens
             $accessToken = JWTAuth::customClaims([
                 'exp' => $accessTokenExpiresAt->timestamp,
                 'token_type' => 'access',
             ])->fromUser($user);
 
-            // Generate refresh token (longer-lived)
             $refreshToken = JWTAuth::customClaims([
                 'exp' => $refreshTokenExpiresAt->timestamp,
                 'token_type' => 'refresh',
@@ -91,14 +94,14 @@ class AuthController extends Controller {
             return response()->json([
                 'user' => $user,
                 'access_token' => $accessToken,
-            ])->cookie(
+            ], 200)->cookie(
                 'refresh_token',
                 $refreshToken,
                 config('jwt.refresh_ttl'),
                 '/',
                 null,
-                config('app.env') === 'production', // secure in production
-                true, // httpOnly
+                config('app.env') === 'production',
+                true,
                 false,
             );
         } catch (JWTException $e) {
@@ -106,37 +109,36 @@ class AuthController extends Controller {
         }
     }
 
+    /**
+     * Refresh the JWT access token using a refresh token.
+     */
     public function refreshToken(Request $request) {
-        // Get refresh token from cookie
         $refreshToken = trim($request->cookie('refresh_token'));
 
-        if (!$refreshToken) {
+        if (empty($refreshToken)) {
             return response()->json(['message' => 'Invalid refresh token'], 401);
         }
 
         try {
-            // Verify the refresh token first
             $payload = JWTAuth::setToken($refreshToken)->getPayload();
 
-            // Validate token type
             if ($payload->get('token_type') !== 'refresh') {
                 return response()->json(['message' => 'Invalid token type'], 401);
             }
 
-            // Get the user
             $user = User::find($payload->get('sub'));
 
             if (!$user) {
                 return response()->json(['message' => 'User not found'], 404);
             }
 
-            // Invalidate the old refresh token (optional but recommended)
             JWTAuth::invalidate($refreshToken);
 
-            // Generate new tokens
+            // Set token expiration times
             $accessTokenExpiresAt = Carbon::now()->addMinutes(config('jwt.ttl'));
             $refreshTokenExpiresAt = Carbon::now()->addMinutes(config('jwt.refresh_ttl'));
 
+            // Generate new access and refresh tokens
             $accessToken = JWTAuth::customClaims([
                 'exp' => $accessTokenExpiresAt->timestamp,
                 'token_type' => 'access',
@@ -149,14 +151,14 @@ class AuthController extends Controller {
 
             return response()->json([
                 'access_token' => $accessToken,
-            ])->cookie(
+            ], 200)->cookie(
                 'refresh_token',
                 $newRefreshToken,
                 config('jwt.refresh_ttl'),
                 '/',
                 null,
-                config('app.env') === 'production', // secure in production
-                true, // httpOnly
+                config('app.env') === 'production',
+                true,
                 false,
             );
         } catch (TokenExpiredException $e) {

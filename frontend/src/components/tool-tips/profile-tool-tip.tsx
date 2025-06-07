@@ -15,9 +15,14 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 type ProfileToolTipProps = {
   userId?: number;
   children: React.ReactNode;
+  delayDuration?: number;
 };
 
-const ProfileToolTip = ({ userId, children }: ProfileToolTipProps) => {
+const ProfileToolTip = ({
+  userId,
+  children,
+  delayDuration = 500,
+}: ProfileToolTipProps) => {
   const [open, setOpen] = useState(false);
 
   const { data: user, isLoading } = useQuery<User>({
@@ -31,7 +36,7 @@ const ProfileToolTip = ({ userId, children }: ProfileToolTipProps) => {
   });
 
   return (
-    <Tooltip open={open} onOpenChange={setOpen}>
+    <Tooltip open={open} onOpenChange={setOpen} delayDuration={delayDuration}>
       <TooltipTrigger asChild>
         <div className="cursor-pointer">{children}</div>
       </TooltipTrigger>

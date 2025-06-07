@@ -140,9 +140,9 @@ const UpdateCat = ({
                       name="name"
                       render={({ field }) => (
                         <FormItem className="col-span-12">
-                          <FormLabel>Label</FormLabel>
+                          <FormLabel>Name</FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder="Create User" />
+                            <Input {...field} placeholder="Luna" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

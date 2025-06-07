@@ -65,10 +65,12 @@ function DialogContent({
   className,
   children,
   size,
+  staticBackdrop = true,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> &
   VariantProps<typeof dialogContentVariants> & {
     asChild?: boolean;
+    staticBackdrop?: boolean;
   }) {
   return (
     <DialogPortal data-slot="dialog-portal">
@@ -76,6 +78,10 @@ function DialogContent({
         <div
           className="h-full overflow-y-auto"
           onPointerDown={e => {
+            if (staticBackdrop) {
+              e.stopPropagation();
+              return;
+            }
             const target = e.target as HTMLElement;
             const isScrollbar =
               target.offsetWidth < target.scrollWidth ||
@@ -95,6 +101,7 @@ function DialogContent({
                 'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
                 'data-[state=closed]:slide-out-to-top-[48%]',
                 'data-[state=open]:slide-in-from-top-[48%]',
+                'overflow-x-auto',
                 className,
                 dialogContentVariants({ size }),
               )}

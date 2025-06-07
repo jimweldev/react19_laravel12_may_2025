@@ -10,17 +10,18 @@ use App\Models\User;
 use Illuminate\Http\Request;
 
 class SelectController extends Controller {
+    /**
+     * Display a paginated list of permissions with optional filtering and search.
+     */
     public function getSelectPermissions(Request $request) {
         $queryParams = $request->all();
 
         try {
             $query = RbacPermission::query();
 
-            // Apply query filters
             $type = 'paginate';
             QueryHelper::apply($query, $queryParams, $type);
 
-            // search
             if ($request->has('search')) {
                 $search = $request->input('search');
                 $query->where(function ($query) use ($search) {
@@ -31,7 +32,6 @@ class SelectController extends Controller {
 
             $total = $query->count();
 
-            // limit and offset
             $limit = $request->input('limit', 10);
             $page = $request->input('page', 1);
             QueryHelper::applyLimitAndOffset($query, $limit, $page);
@@ -53,17 +53,18 @@ class SelectController extends Controller {
         }
     }
 
+    /**
+     * Display a paginated list of roles with optional filtering and search.
+     */
     public function getSelectRoles(Request $request) {
         $queryParams = $request->all();
 
         try {
             $query = RbacRole::query();
 
-            // Apply query filters
             $type = 'paginate';
             QueryHelper::apply($query, $queryParams, $type);
 
-            // search
             if ($request->has('search')) {
                 $search = $request->input('search');
                 $query->where(function ($query) use ($search) {
@@ -74,7 +75,6 @@ class SelectController extends Controller {
 
             $total = $query->count();
 
-            // limit and offset
             $limit = $request->input('limit', 10);
             $page = $request->input('page', 1);
             QueryHelper::applyLimitAndOffset($query, $limit, $page);
@@ -96,17 +96,18 @@ class SelectController extends Controller {
         }
     }
 
+    /**
+     * Display a paginated list of users with optional filtering and search.
+     */
     public function getSelectUsers(Request $request) {
         $queryParams = $request->all();
 
         try {
             $query = User::query();
 
-            // Apply query filters
             $type = 'paginate';
             QueryHelper::apply($query, $queryParams, $type);
 
-            // search
             if ($request->has('search')) {
                 $search = $request->input('search');
                 $query->where(function ($query) use ($search) {
@@ -117,7 +118,6 @@ class SelectController extends Controller {
 
             $total = $query->count();
 
-            // limit and offset
             $limit = $request->input('limit', 10);
             $page = $request->input('page', 1);
             QueryHelper::applyLimitAndOffset($query, $limit, $page);
@@ -139,17 +139,18 @@ class SelectController extends Controller {
         }
     }
 
+    /**
+     * Display a paginated list of system global dropdowns with optional filtering and search.
+     */
     public function getSelectSystemGlobalDropdowns(Request $request) {
         $queryParams = $request->all();
 
         try {
             $query = SystemGlobalDropdown::query();
 
-            // Apply query filters
             $type = 'paginate';
             QueryHelper::apply($query, $queryParams, $type);
 
-            // search
             if ($request->has('search')) {
                 $search = $request->input('search');
                 $query->where(function ($query) use ($search) {
@@ -159,7 +160,6 @@ class SelectController extends Controller {
 
             $total = $query->count();
 
-            // limit and offset
             $limit = $request->input('limit', 10);
             $page = $request->input('page', 1);
             QueryHelper::applyLimitAndOffset($query, $limit, $page);

@@ -18,20 +18,24 @@ Route::post('/auth/google-login', [AuthController::class, 'loginWithGoogle']);
 Route::post('/auth/refresh-token', [AuthController::class, 'refreshToken']);
 
 Route::middleware('check.token')->group(function () {
-    // USERS
-    Route::get('/users/paginate', [UserController::class, 'paginate']);
-    Route::post('/users/import', [UserController::class, 'import']);
+    // ===================================================================
+    // ===================================================================
+    // === ADMIN
+    // ===================================================================
+    // ===================================================================
 
-    // SETTINGS
-    Route::patch('/users/{id}/change-password', [UserController::class, 'changePassword']);
-    Route::patch('/users/{id}/profile', [UserController::class, 'updateProfile']);
-    Route::post('/users/{id}/profile/avatar', [UserController::class, 'updateProfileAvatar']);
-    Route::patch('/users/settings', [UserController::class, 'updateUserSettings']);
-
-    // DASHBOARD
+    // ==============
+    // === DASHBOARD
     Route::get('/dashboard/statistics', [DashboardController::class, 'getDashboardStatistics']);
     Route::get('/dashboard/user-registration-stats', [DashboardController::class, 'getUserRegistrationStats']);
     Route::get('/dashboard/account-types', [DashboardController::class, 'getDashboardAccountTypes']);
+
+    // ==============
+    // === USERS
+    // users
+    Route::get('/users/paginate', [UserController::class, 'paginate']);
+    Route::post('/users/import', [UserController::class, 'import']);
+    Route::resource('/users', UserController::class);
 
     // user roles
     Route::get('/users/{id}/user-roles', [UserController::class, 'getUserRoles']);
@@ -42,9 +46,6 @@ Route::middleware('check.token')->group(function () {
     Route::post('/users/{id}/archived/restore', [UserController::class, 'restoreArchivedUser']);
     Route::get('/users/archived/paginate', [UserController::class, 'getAllArchivedUsersPaginate']);
 
-    Route::resource('/users', UserController::class);
-
-    // RBAC
     // roles
     Route::get('/rbac/roles/paginate', [RbacRoleController::class, 'paginate']);
     Route::get('/rbac/roles/{id}/permissions/{permissionId}', [RbacRoleController::class, 'getPermission']);
@@ -56,31 +57,60 @@ Route::middleware('check.token')->group(function () {
     Route::get('/rbac/permissions/paginate', [RbacPermissionController::class, 'paginate']);
     Route::resource('/rbac/permissions', RbacPermissionController::class);
 
-    // SYSTEM
-    // system settings
+    // ==============
+    // === SYSTEM
+    // settings
     Route::get('/system/settings/paginate', [SystemSettingController::class, 'paginate']);
     Route::resource('/system/settings', SystemSettingController::class);
 
-    // system global dropdowns
+    // global dropdowns
     Route::get('/system/global-dropdowns/paginate', [SystemGlobalDropdownController::class, 'paginate']);
     Route::resource('/system/global-dropdowns', SystemGlobalDropdownController::class);
 
-    // mails
+    // ==============
+    // === MAILS
     // logs
     Route::get('/mails/logs/paginate', [MailLogController::class, 'paginate']);
     Route::resource('/mails/logs', MailLogController::class);
+
     // templates
     Route::get('/mails/templates/paginate', [MailTemplateController::class, 'paginate']);
     Route::resource('/mails/templates', MailTemplateController::class);
 
-    // EXAMPLES
-    // cats
-    Route::get('/cats/paginate', [CatController::class, 'paginate']);
-    Route::resource('/cats', CatController::class);
+    // ===================================================================
+    // ===================================================================
+    // === USER SETTINGS
+    // ===================================================================
+    // ===================================================================
 
-    // SELECT
+    // ==============
+    // === SETTINGS
+    Route::patch('/settings/change-password', [UserController::class, 'changePassword']);
+    Route::patch('/settings/profile', [UserController::class, 'updateProfile']);
+    Route::post('/settings/profile/avatar', [UserController::class, 'updateProfileAvatar']);
+    Route::patch('/settings', [UserController::class, 'updateUserSettings']);
+
+    // ===================================================================
+    // ===================================================================
+    // === SELECTS
+    // ===================================================================
+    // ===================================================================
+
+    // ==============
+    // === SELECT
     Route::get('/select/roles', [SelectController::class, 'getSelectRoles']);
     Route::get('/select/permissions', [SelectController::class, 'getSelectPermissions']);
     Route::get('/select/users', [SelectController::class, 'getSelectUsers']);
     Route::get('/select/global-dropdowns', [SelectController::class, 'getSelectSystemGlobalDropdowns']);
+
+    // ===================================================================
+    // ===================================================================
+    // === EXAMPLES
+    // ===================================================================
+    // ===================================================================
+
+    // ==============
+    // === CATS
+    Route::get('/cats/paginate', [CatController::class, 'paginate']);
+    Route::resource('/cats', CatController::class);
 });

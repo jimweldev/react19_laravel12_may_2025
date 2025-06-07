@@ -5,10 +5,19 @@ namespace App\Helpers;
 use App\Models\User;
 
 class UserHelper {
-    public static function getUser($email) {
+    /**
+     * Retrieve a user by email with all related roles, permissions, and settings.
+     *
+     * Eager loads:
+     * - rbac_user_roles.rbac_role.rbac_role_permissions.rbac_permission
+     * - user_setting
+     */
+    public static function getUser(string $email): ?User {
         return User::where('email', $email)
-            ->with('rbac_user_roles.rbac_role.rbac_role_permissions.rbac_permission')
-            ->with('user_setting')
+            ->with([
+                'rbac_user_roles.rbac_role.rbac_role_permissions.rbac_permission',
+                'user_setting',
+            ])
             ->first();
     }
 }

@@ -48,7 +48,7 @@ const UploadAvatar = ({ open, setOpen }: UploadAvatarProps) => {
     formData.append('avatar', resizedImage);
 
     toast.promise(
-      mainInstance.post(`/api/users/${user?.id}/profile/avatar`, formData, {
+      mainInstance.post(`/api/settings/profile/avatar`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       }),
       {

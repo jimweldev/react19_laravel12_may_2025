@@ -11,15 +11,15 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller {
+    /**
+     * Display a listing of users based on filters.
+     */
     public function index(Request $request) {
         $queryParams = $request->all();
 
         try {
             $query = User::query();
-
-            // Apply query filters
             QueryHelper::apply($query, $queryParams);
-
             $records = $query->get();
         } catch (\Exception $e) {
             return response()->json([
@@ -31,6 +31,9 @@ class UserController extends Controller {
         return response()->json($records, 200);
     }
 
+    /**
+     * Display the specified user by ID with roles.
+     */
     public function show($id) {
         $record = User::where('id', $id)
             ->with(['rbac_user_roles' => function ($query) {
@@ -47,12 +50,14 @@ class UserController extends Controller {
             ], 404);
         }
 
-        return response()->json($record);
+        return response()->json($record, 200);
     }
 
+    /**
+     * Store a newly created user in storage.
+     */
     public function store(Request $request) {
         try {
-            // check if email already exists
             $userExists = User::where('email', $request->input('email'))->exists();
 
             if ($userExists) {
@@ -61,12 +66,10 @@ class UserController extends Controller {
                 ], 400);
             }
 
-            // add default password
             $request['password'] = Hash::make($request->input('P@ssword123!'));
-
             $record = User::create($request->all());
 
-            return response()->json($record);
+            return response()->json($record, 201);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'An error occurred.',
@@ -75,6 +78,9 @@ class UserController extends Controller {
         }
     }
 
+    /**
+     * Update the specified user by ID.
+     */
     public function update(Request $request, $id) {
         try {
             $user = User::find($id);
@@ -96,6 +102,9 @@ class UserController extends Controller {
         }
     }
 
+    /**
+     * Remove the specified user from storage.
+     */
     public function destroy(Request $request, $id) {
         $authUser = $request->user();
 
@@ -108,7 +117,6 @@ class UserController extends Controller {
                 ], 404);
             }
 
-            // do not delete if the user is me
             if ($user->id == $authUser->id) {
                 return response()->json([
                     'message' => 'You cannot delete your own account.',
@@ -126,6 +134,9 @@ class UserController extends Controller {
         }
     }
 
+    /**
+     * Paginate users with filtering, relations and search.
+     */
     public function paginate(Request $request) {
         $queryParams = $request->all();
 
@@ -137,25 +148,17 @@ class UserController extends Controller {
                     }]);
             }]);
 
-            // Apply query filters
             $type = 'paginate';
             QueryHelper::apply($query, $queryParams, $type);
 
-            // check if params has `has`
             if (isset($queryParams['has'])) {
-                $has = explode(',', $queryParams['has']);
-
-                foreach ($has as $h) {
+                foreach (explode(',', $queryParams['has']) as $h) {
                     $query->whereHas($h);
                 }
             }
 
-            // check if params has `with`
             if (isset($queryParams['with'])) {
-                $with = explode(',', $queryParams['with']);
-
-                // check if `with` has `permissions`
-                if (in_array('rbac_user_roles', $with)) {
+                if (in_array('rbac_user_roles', explode(',', $queryParams['with']))) {
                     $query->with(['rbac_user_roles' => function ($query) {
                         $query->select('id', 'user_id', 'rbac_role_id')
                             ->with(['rbac_role' => function ($query) {
@@ -165,28 +168,24 @@ class UserController extends Controller {
                 }
             }
 
-            // search
             if ($request->has('search')) {
                 $search = $request->input('search');
                 $query->where(function ($query) use ($search) {
-                    $query->where('email', 'LIKE', '%'.$search.'%')
-                        ->orWhere('first_name', 'LIKE', '%'.$search.'%')
-                        ->orWhere('middle_name', 'LIKE', '%'.$search.'%')
-                        ->orWhere('last_name', 'LIKE', '%'.$search.'%')
-                        ->orWhere('suffix', 'LIKE', '%'.$search.'%')
+                    $query->where('email', 'LIKE', "%$search%")
+                        ->orWhere('first_name', 'LIKE', "%$search%")
+                        ->orWhere('middle_name', 'LIKE', "%$search%")
+                        ->orWhere('last_name', 'LIKE', "%$search%")
+                        ->orWhere('suffix', 'LIKE', "%$search%")
                         ->orWhereHas('rbac_user_roles.rbac_role', function ($query) use ($search) {
-                            $query->where('label', 'LIKE', '%'.$search.'%');
+                            $query->where('label', 'LIKE', "%$search%");
                         });
                 });
             }
 
             $total = $query->count();
-
-            // limit and offset
             $limit = $request->input('limit', 10);
             $page = $request->input('page', 1);
             QueryHelper::applyLimitAndOffset($query, $limit, $page);
-
             $records = $query->get();
 
             return response()->json([
@@ -203,28 +202,23 @@ class UserController extends Controller {
         }
     }
 
+    /**
+     * Import a list of users from a dataset.
+     */
     public function import(Request $request) {
         try {
-            $info = [
-                'new' => 0,
-                'skipped' => 0,
-            ];
-
+            $info = ['new' => 0, 'skipped' => 0];
             $data = $request->input('data');
 
             foreach ($data as $user) {
                 $email = $user['Email'] ?? null;
 
-                // Validate and normalize data
                 if (!$email) {
                     return response()->json(['message' => 'Email is required'], 400);
                 }
 
-                $userExists = User::where('email', $email)->exists();
-
-                if (!$userExists) {
+                if (!User::where('email', $email)->exists()) {
                     $info['new']++;
-
                     User::create([
                         'email' => strtolower($email),
                         'first_name' => $user['First Name'] ?? null,
@@ -250,25 +244,29 @@ class UserController extends Controller {
         }
     }
 
+    /**
+     * Retrieve an archived (soft-deleted) user.
+     */
     public function getArchivedUser($id) {
         $record = User::onlyTrashed()->find($id);
 
-        return response()->json($record);
+        return response()->json($record, 200);
     }
 
+    /**
+     * Restore a soft-deleted user.
+     */
     public function restoreArchivedUser($id) {
         try {
             $record = User::onlyTrashed()->find($id);
 
             if (!$record) {
-                return response()->json([
-                    'message' => 'User not found.',
-                ], 404);
+                return response()->json(['message' => 'User not found.'], 404);
             }
 
             $record->restore();
 
-            return response()->json($record);
+            return response()->json($record, 200);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'An error occurred.',
@@ -277,39 +275,35 @@ class UserController extends Controller {
         }
     }
 
+    /**
+     * Paginate through archived users.
+     */
     public function getAllArchivedUsersPaginate(Request $request) {
         $queryParams = $request->all();
 
         try {
             $query = User::onlyTrashed();
 
-            // Apply query filters
-            $type = 'paginate';
-            QueryHelper::apply($query, $queryParams, $type);
+            QueryHelper::apply($query, $queryParams, 'paginate');
 
-            // search
             if ($request->has('search')) {
                 $search = $request->input('search');
                 $query->where(function ($query) use ($search) {
-                    $query->where('email', 'LIKE', '%'.$search.'%')
-                        ->orWhere('first_name', 'LIKE', '%'.$search.'%')
-                        ->orWhere('middle_name', 'LIKE', '%'.$search.'%')
-                        ->orWhere('last_name', 'LIKE', '%'.$search.'%')
-                        ->orWhere('suffix', 'LIKE', '%'.$search.'%');
+                    $query->where('email', 'LIKE', "%$search%")
+                        ->orWhere('first_name', 'LIKE', "%$search%")
+                        ->orWhere('middle_name', 'LIKE', "%$search%")
+                        ->orWhere('last_name', 'LIKE', "%$search%")
+                        ->orWhere('suffix', 'LIKE', "%$search%");
                 });
             }
 
             $total = $query->count();
-
-            // limit and offset
             $limit = $request->input('limit', 10);
             $page = $request->input('page', 1);
             QueryHelper::applyLimitAndOffset($query, $limit, $page);
 
-            $users = $query->get();
-
             return response()->json([
-                'records' => $users,
+                'records' => $query->get(),
                 'info' => [
                     'total' => $total,
                     'pages' => ceil($total / $limit),
@@ -322,7 +316,9 @@ class UserController extends Controller {
         }
     }
 
-    // USER ROLES
+    /**
+     * Get user roles by user ID.
+     */
     public function getUserRoles($id) {
         $record = User::where('id', $id)
             ->with(['rbac_user_roles' => function ($query) {
@@ -334,30 +330,28 @@ class UserController extends Controller {
             ->first();
 
         if (!$record) {
-            return response()->json([
-                'message' => 'Record not found.',
-            ], 404);
+            return response()->json(['message' => 'Record not found.'], 404);
         }
 
         return response()->json($record, 200);
     }
 
+    /**
+     * Update roles for a user.
+     */
     public function updateUserRoles(Request $request, $id) {
         try {
             $user = User::find($id);
 
             if (!$user) {
-                return response()->json([
-                    'message' => 'User not found.',
-                ], 404);
+                return response()->json(['message' => 'User not found.'], 404);
             }
 
-            // Sync user roles
             $user->rbac_roles()->sync($request->input('role_ids', []));
 
             return response()->json([
                 'message' => 'User roles updated successfully.',
-                'roles' => $user->rbac_roles, // Load updated roles
+                'roles' => $user->rbac_roles,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -367,84 +361,82 @@ class UserController extends Controller {
         }
     }
 
-    // SETTINGS
-    public function changePassword(Request $request, $id) {
+    /**
+     * Change the user's password.
+     */
+    public function changePassword(Request $request) {
+        $authUser = $request->user();
+
         try {
             $currentPassword = $request->input('current_password');
             $newPassword = $request->input('new_password');
             $confirmNewPassword = $request->input('confirm_new_password');
 
             if (!$currentPassword || !$newPassword || !$confirmNewPassword) {
-                return response()->json([
-                    'message' => 'All fields are required.',
-                ], 400);
+                return response()->json(['message' => 'All fields are required.'], 400);
             }
 
             if ($newPassword !== $confirmNewPassword) {
-                return response()->json([
-                    'message' => 'New passwords do not match.',
-                ], 400);
+                return response()->json(['message' => 'New passwords do not match.'], 400);
             }
 
-            // check if the current password is correct
-            $user = User::find($id);
+            $user = User::find($authUser->id);
 
             if (!$user) {
-                return response()->json([
-                    'message' => 'User not found.',
-                ], 404);
+                return response()->json(['message' => 'User not found.'], 404);
             }
 
             if (!Hash::check($currentPassword, $user->password)) {
-                return response()->json([
-                    'message' => 'Current password is incorrect.',
-                ], 400); // Add the 400 status code here
+                return response()->json(['message' => 'Current password is incorrect.'], 400);
             }
 
             $user->password = Hash::make($newPassword);
             $user->save();
+
+            return response()->json(['message' => 'Password changed successfully.'], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'An error occurred.',
-                'error' => $e->getMessage(),
-            ], 400);
+            return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 400);
         }
     }
 
-    public function updateProfile(Request $request, $id) {
+    /**
+     * Update a user's profile.
+     */
+    public function updateProfile(Request $request) {
+        $authUser = $request->user();
+
         try {
-            $user = User::find($id);
+            $user = User::find($authUser->id);
             if (!$user) {
                 return response()->json(['message' => 'User not found'], 404);
             }
-            $user->update($request->all());
 
+            $user->update($request->all());
             $user = UserHelper::getUser($user->email);
 
             return response()->json($user);
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'An error occurred.',
-                'error' => $e->getMessage(),
-            ], 400);
+            return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 400);
         }
     }
 
-    public function updateProfileAvatar(Request $request, $id) {
-        try {
-            $user = User::find($id);
+    /**
+     * Update user's avatar.
+     */
+    public function updateProfileAvatar(Request $request) {
+        $authUser = $request->user();
 
+        try {
+            $user = User::find($authUser->id);
             if (!$user) {
                 return response()->json(['message' => 'User not found'], 404);
             }
 
-            // Ensure the avatar is present
             $avatarData = $request->input('avatar');
             if (!$avatarData) {
                 return response()->json(['message' => 'No avatar data provided'], 400);
             }
 
-            // Extract the Base64 content
             $data = explode(';base64,', $avatarData);
             if (count($data) !== 2) {
                 return response()->json(['message' => 'Invalid avatar format'], 400);
@@ -457,16 +449,13 @@ class UserController extends Controller {
                 return response()->json(['message' => 'Failed to decode avatar'], 400);
             }
 
-            // Generate a unique file name and store it
             $avatarName = uniqid().'.'.$imageExt;
             Storage::disk('public')->put('avatars/'.$avatarName, $avatarContent);
 
-            // Delete old avatar if exists
             if ($user->avatar) {
                 Storage::disk('public')->delete('avatars/'.$user->avatar);
             }
 
-            // Update user avatar path
             $user->avatar = $avatarName;
             $user->save();
 
@@ -475,37 +464,28 @@ class UserController extends Controller {
                 'message' => 'Avatar updated successfully!',
             ]);
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'An error occurred.',
-                'error' => $e->getMessage(),
-            ], 400);
+            return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 400);
         }
     }
 
+    /**
+     * Update authenticated user's settings.
+     */
     public function updateUserSettings(Request $request) {
         $authUser = $request->user();
 
         try {
-            $userSetting = UserSetting::where('user_id', $authUser->id)
-                ->first();
+            $userSetting = UserSetting::firstOrCreate(
+                ['user_id' => $authUser->id],
+                $request->all()
+            );
 
-            if (!$userSetting) {
-                // create user setting
-                // add user_id to request
-                $request->merge(['user_id' => $authUser->id]);
-                $userSetting = UserSetting::create($request->all());
-            } else {
-                $userSetting->update($request->all());
-            }
-
+            $userSetting->update($request->all());
             $user = UserHelper::getUser($authUser->email);
 
             return response()->json($user);
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'An error occurred.',
-                'error' => $e->getMessage(),
-            ], 400);
+            return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 400);
         }
     }
 }

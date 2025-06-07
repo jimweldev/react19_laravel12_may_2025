@@ -3,11 +3,12 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 type ToolTipProps = {
   children: React.ReactNode;
   content: string;
+  delayDuration?: number;
 };
 
-const ToolTip = ({ children, content }: ToolTipProps) => {
+const ToolTip = ({ children, content, delayDuration = 500 }: ToolTipProps) => {
   return (
-    <Tooltip>
+    <Tooltip delayDuration={delayDuration}>
       <TooltipTrigger asChild>{children}</TooltipTrigger>
       <TooltipContent>
         <p>{content}</p>

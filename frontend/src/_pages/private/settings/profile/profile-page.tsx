@@ -56,7 +56,7 @@ const ProfilePage = () => {
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     setIsLoadingUpdateProfile(true);
 
-    toast.promise(mainInstance.patch(`/api/users/${user?.id}/profile`, data), {
+    toast.promise(mainInstance.patch(`/api/settings/profile`, data), {
       loading: 'Loading...',
       success: response => {
         setUser(response.data);

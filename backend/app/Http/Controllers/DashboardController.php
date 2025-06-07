@@ -9,7 +9,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller {
-    public function getDashboardStatistics(Request $request) {
+    /**
+     * Get statistics for the dashboard.
+     */
+    public function getDashboardStatistics() {
         return response()->json([
             'users' => User::count(),
             'deleted_users' => User::onlyTrashed()->count(),
@@ -18,15 +21,19 @@ class DashboardController extends Controller {
         ], 200);
     }
 
+    /**
+     * Get user registration statistics based on the specified grouping and mode.
+     */
     public function getUserRegistrationStats(Request $request) {
         $groupBy = $request->query('group_by', 'month');
         $startDate = $request->query('start_date');
         $endDate = $request->query('end_date');
-        $mode = $request->query('mode', 'periodic'); // New mode parameter
+        $mode = $request->query('mode', 'periodic');
 
         $validGroups = ['day', 'week', 'month'];
         $validModes = ['periodic', 'cumulative'];
 
+        // Validate input parameters
         if (!in_array($groupBy, $validGroups)) {
             return response()->json(['error' => 'Invalid group_by value.'], 400);
         }
@@ -39,6 +46,7 @@ class DashboardController extends Controller {
             return response()->json(['error' => 'start_date and end_date are required.'], 400);
         }
 
+        // Prepare query for user registration stats
         $query = User::query();
         $query->whereDate('created_at', '>=', $startDate)
             ->whereDate('created_at', '<=', $endDate);
@@ -68,6 +76,7 @@ class DashboardController extends Controller {
         $end = Carbon::parse($endDate);
         $periods = [];
 
+        // Generate periods and calculate statistics
         if ($groupBy === 'day') {
             $period = CarbonPeriod::create($start, '1 day', $end);
             foreach ($period as $date) {
@@ -133,16 +142,17 @@ class DashboardController extends Controller {
             }
         }
 
-        return response()->json($result);
+        return response()->json($result, 200);
     }
 
-    public function getDashboardAccountTypes(Request $request) {
-        // Get all distinct account_type and their count from users table
+    /**
+     * Get account type distribution for the dashboard.
+     */
+    public function getDashboardAccountTypes() {
         $records = User::select('account_type', DB::raw('count(*) as count'))
             ->groupBy('account_type')
             ->get();
 
-        // Return as JSON response
-        return response()->json($records);
+        return response()->json($records, 200);
     }
 }

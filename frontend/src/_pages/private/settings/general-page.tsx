@@ -91,7 +91,7 @@ const GeneralPage = () => {
 
     setIsLoadingUpdateProfile(true);
 
-    toast.promise(mainInstance.patch(`/api/users/settings`, newData), {
+    toast.promise(mainInstance.patch(`/api/settings`, newData), {
       loading: 'Loading...',
       success: response => {
         setUser(response.data);

@@ -3,7 +3,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import useAuthUserStore from '@/_stores/auth-user-store';
 import PageHeader from '@/components/typography/page-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardBody, CardFooter } from '@/components/ui/card';
@@ -36,8 +35,6 @@ const FormSchema = z
   });
 
 const PasswordPage = () => {
-  const { user } = useAuthUserStore();
-
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -53,26 +50,21 @@ const PasswordPage = () => {
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     setIsLoadingChangePassword(true);
 
-    toast.promise(
-      mainInstance.patch(`/api/users/${user?.id}/change-password`, data),
-      {
-        loading: 'Loading...',
-        success: () => {
-          form.reset();
-          return 'Success!';
-        },
-        error: error => {
-          return (
-            error.response?.data?.message ||
-            error.message ||
-            'An error occurred'
-          );
-        },
-        finally: () => {
-          setIsLoadingChangePassword(false);
-        },
+    toast.promise(mainInstance.patch(`/api/settings/change-password`, data), {
+      loading: 'Loading...',
+      success: () => {
+        form.reset();
+        return 'Success!';
       },
-    );
+      error: error => {
+        return (
+          error.response?.data?.message || error.message || 'An error occurred'
+        );
+      },
+      finally: () => {
+        setIsLoadingChangePassword(false);
+      },
+    });
   };
 
   return (

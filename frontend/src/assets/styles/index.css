@@ -330,3 +330,19 @@ table.table-md th,
 table.table-md td {
   @apply !py-2;
 }
+
+.with-fancybox body {
+  pointer-events: auto !important;
+}
+
+.ql-align-center img {
+  @apply mx-auto;
+}
+
+.ql-align-right img {
+  @apply ml-auto;
+}
+
+.ql-align-left img {
+  @apply mr-auto;
+}
