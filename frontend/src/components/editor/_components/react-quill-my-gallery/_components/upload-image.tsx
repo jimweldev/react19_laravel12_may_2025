@@ -77,6 +77,7 @@ const UploadImage = ({ open, setOpen, refetch }: ReactQuillEditorProps) => {
         success: () => {
           refetch();
           form.reset();
+          setFile(null);
           return 'Success!';
         },
         error: error => {

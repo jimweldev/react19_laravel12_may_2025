@@ -281,6 +281,7 @@ const ReactQuillMyGallery = ({
                             Rename
                           </ContextMenuItem>
                           <ContextMenuItem
+                            className="bg-destructive hover:!bg-destructive/90 !text-white"
                             onClick={() => {
                               setSelectedImage(gallery);
                               setOpenDeleteGallery(true);

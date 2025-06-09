@@ -75,7 +75,7 @@ class GalleryController extends Controller {
                 $record = Gallery::create([
                     'user_id' => $authUser->id,
                     'file_name' => $request->input('file_name'),
-                    'file_url' => $filePath,
+                    'file_path' => $filePath,
                 ]);
 
                 // Return the created record
