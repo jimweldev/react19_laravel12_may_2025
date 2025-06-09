@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FaEye, FaPaperPlane } from 'react-icons/fa6';
+import { FaEye } from 'react-icons/fa6';
 import type { MailLog } from '@/_types/mail-log';
 import type { DataTableColumns } from '@/components/data-tables/data-table';
 import DataTable from '@/components/data-tables/data-table';
@@ -84,15 +84,6 @@ const MailLogsTab = () => {
                         }}
                       >
                         <FaEye />
-                      </Button>
-                    </ToolTip>
-                    <ToolTip content="Send Mail">
-                      <Button
-                        variant="warning"
-                        size="xs"
-                        disabled={mailLog.is_sent}
-                      >
-                        <FaPaperPlane />
                       </Button>
                     </ToolTip>
                   </InputGroup>

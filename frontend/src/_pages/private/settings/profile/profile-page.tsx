@@ -90,7 +90,7 @@ const ProfilePage = () => {
                   <div className="outline-primary border-card flex size-full items-center overflow-hidden rounded-full border-1 outline-2 select-none">
                     <ReactImage
                       className="pointer-events-none size-full object-cover"
-                      src={`${import.meta.env.VITE_STORAGE_BASE_URL}/avatars/${user?.avatar}`}
+                      src={`${import.meta.env.VITE_STORAGE_BASE_URL}/${user?.avatar_path}`}
                       alt="Avatar"
                       unloaderSrc={fallbackImage}
                     />

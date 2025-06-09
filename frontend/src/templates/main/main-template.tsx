@@ -82,7 +82,7 @@ const MainTemplate = ({ sidebarGroups }: MainTemplateProps) => {
                   <div className="size-10 cursor-pointer rounded-full p-1">
                     <div className="outline-primary flex size-full items-center justify-center overflow-hidden rounded-full border-2 border-transparent object-contain outline-2">
                       <ReactImage
-                        src={`${import.meta.env.VITE_STORAGE_BASE_URL}/avatars/${user?.avatar}`}
+                        src={`${import.meta.env.VITE_STORAGE_BASE_URL}/${user?.avatar_path}`}
                         alt="Avatar"
                         unloaderSrc={fallbackImage}
                       />

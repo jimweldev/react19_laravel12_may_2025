@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CatController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\MailLogController;
 use App\Http\Controllers\MailTemplateController;
 use App\Http\Controllers\RbacPermissionController;
@@ -79,9 +80,14 @@ Route::middleware('check.token')->group(function () {
 
     // ===================================================================
     // ===================================================================
-    // === USER SETTINGS
+    // === USERS
     // ===================================================================
     // ===================================================================
+
+    // ==============
+    // === GALLERIES
+    Route::get('/galleries/paginate', [GalleryController::class, 'paginate']);
+    Route::resource('/galleries', GalleryController::class);
 
     // ==============
     // === SETTINGS

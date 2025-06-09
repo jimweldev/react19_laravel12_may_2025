@@ -75,22 +75,7 @@ function DialogContent({
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay>
-        <div
-          className="h-full overflow-y-auto"
-          onPointerDown={e => {
-            if (staticBackdrop) {
-              e.stopPropagation();
-              return;
-            }
-            const target = e.target as HTMLElement;
-            const isScrollbar =
-              target.offsetWidth < target.scrollWidth ||
-              target.offsetHeight < target.scrollHeight;
-            if (isScrollbar) {
-              e.stopPropagation();
-            }
-          }}
-        >
+        <div className="h-full overflow-y-auto">
           <div className="flex justify-center p-4">
             <DialogPrimitive.Content
               data-slot="dialog-content"
@@ -101,10 +86,14 @@ function DialogContent({
                 'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
                 'data-[state=closed]:slide-out-to-top-[48%]',
                 'data-[state=open]:slide-in-from-top-[48%]',
-                'overflow-x-auto',
                 className,
                 dialogContentVariants({ size }),
               )}
+              onInteractOutside={e => {
+                if (staticBackdrop) {
+                  e.preventDefault();
+                }
+              }}
               {...props}
             >
               {children}

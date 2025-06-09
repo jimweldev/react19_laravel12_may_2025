@@ -115,7 +115,7 @@ export default InputPage;
                   <FormItem className="col-span-12">
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="example@example.com" {...field} />
+                      <Input placeholder="me@example.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

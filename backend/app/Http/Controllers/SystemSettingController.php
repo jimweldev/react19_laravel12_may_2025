@@ -11,6 +11,15 @@ class SystemSettingController extends Controller {
      * Display a listing of the records.
      */
     public function index(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         // Get all query parameters
         $queryParams = $request->all();
 
@@ -38,7 +47,16 @@ class SystemSettingController extends Controller {
     /**
      * Display the specified record.
      */
-    public function show($id) {
+    public function show(Request $request, $id) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         // Find the record by ID
         $record = SystemSetting::where('id', $id)->first();
 
@@ -57,6 +75,15 @@ class SystemSettingController extends Controller {
      * Store a newly created record in storage.
      */
     public function store(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             // Check if a record with the same 'value' already exists
             $roleExists = SystemSetting::where('value', $request->input('value'))->exists();
@@ -86,6 +113,15 @@ class SystemSettingController extends Controller {
      * Update the specified record in storage.
      */
     public function update(Request $request, $id) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             // Find the record by ID
             $role = SystemSetting::find($id);
@@ -114,7 +150,16 @@ class SystemSettingController extends Controller {
     /**
      * Remove the specified record from storage.
      */
-    public function destroy($id) {
+    public function destroy(Request $request, $id) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             // Find the record by ID
             $role = SystemSetting::find($id);
@@ -144,6 +189,15 @@ class SystemSettingController extends Controller {
      * Display a paginated list of records with optional filtering and search.
      */
     public function paginate(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+        
         // Get all query parameters
         $queryParams = $request->all();
 

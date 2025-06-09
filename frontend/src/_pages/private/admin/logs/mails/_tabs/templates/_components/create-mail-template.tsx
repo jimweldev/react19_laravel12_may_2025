@@ -101,7 +101,7 @@ const CreateMailLog = ({ open, setOpen, refetch }: CreateMailLogProps) => {
                         <FormItem className="col-span-12">
                           <FormLabel>Label</FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder="Luna" />
+                            <Input {...field} placeholder="welcome_template" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -114,7 +114,21 @@ const CreateMailLog = ({ open, setOpen, refetch }: CreateMailLogProps) => {
                         <FormItem className="col-span-12">
                           <FormLabel>Content</FormLabel>
                           <FormControl>
-                            <Textarea {...field} placeholder="Luna" />
+                            <Textarea
+                              {...field}
+                              placeholder={`
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Welcome Template</title>
+  </head>
+  <body>
+
+  </body>
+</html>
+                              `.trim()}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

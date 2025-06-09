@@ -103,7 +103,7 @@ const ViewMailLog: React.FC<ViewMailLogProps> = ({
               ) : (
                 <div className="space-y-3">
                   <div className="grid grid-cols-12 gap-2">
-                    <InputGroup className="col-span-12 md:col-span-8">
+                    <InputGroup className="col-span-12 md:col-span-12">
                       <div className="flex items-center border px-3">
                         <div className="text-xs">Subject</div>
                       </div>
@@ -126,7 +126,7 @@ const ViewMailLog: React.FC<ViewMailLogProps> = ({
                         readOnly
                       />
                     </InputGroup>
-                    <InputGroup className="col-span-6 md:col-span-4">
+                    <InputGroup className="col-span-12 md:col-span-6">
                       <div className="flex items-center border px-3">
                         <div className="text-xs">Date</div>
                       </div>
@@ -147,7 +147,7 @@ const ViewMailLog: React.FC<ViewMailLogProps> = ({
                       <Input
                         type="text"
                         inputSize="sm"
-                        value={getCommaSeparated(mailLog?.cc || '')}
+                        value={getCommaSeparated(mailLog?.cc || '') || '-'}
                         readOnly
                       />
                     </InputGroup>
@@ -158,7 +158,7 @@ const ViewMailLog: React.FC<ViewMailLogProps> = ({
                       <Input
                         type="text"
                         inputSize="sm"
-                        value={getCommaSeparated(mailLog?.bcc || '')}
+                        value={getCommaSeparated(mailLog?.bcc || '') || '-'}
                         readOnly
                       />
                     </InputGroup>
@@ -173,7 +173,7 @@ const ViewMailLog: React.FC<ViewMailLogProps> = ({
                           data-fancybox={`${attachment.id}`}
                           href={attachment.file_url}
                         >
-                          <Badge>{attachment.file_url}</Badge>
+                          <Badge>{attachment.file_name}</Badge>
                         </a>
                       ))}
                     </div>

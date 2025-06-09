@@ -11,6 +11,15 @@ class MailTemplateController extends Controller {
      * Display a listing of the records.
      */
     public function index(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         // Get all query parameters
         $queryParams = $request->all();
 
@@ -38,7 +47,16 @@ class MailTemplateController extends Controller {
     /**
      * Display the specified record.
      */
-    public function show($id) {
+    public function show(Request $request, $id) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         // Find the record by ID
         $record = MailTemplate::where('id', $id)
             ->first();
@@ -58,6 +76,15 @@ class MailTemplateController extends Controller {
      * Store a newly created record in storage.
      */
     public function store(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             // Check if the record already exists
             $recordExists = MailTemplate::where('label', $request->input('label'))->exists();
@@ -87,6 +114,15 @@ class MailTemplateController extends Controller {
      * Update the specified record in storage.
      */
     public function update(Request $request, $id) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             // Find the record by ID
             $record = MailTemplate::find($id);
@@ -115,7 +151,16 @@ class MailTemplateController extends Controller {
     /**
      * Remove the specified record from storage.
      */
-    public function destroy($id) {
+    public function destroy(Request $request, $id) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             // Find the record by ID
             $record = MailTemplate::find($id);
@@ -145,6 +190,15 @@ class MailTemplateController extends Controller {
      * Display a paginated list of records with optional filtering and search.
      */
     public function paginate(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+        
         // Get all query parameters
         $queryParams = $request->all();
 

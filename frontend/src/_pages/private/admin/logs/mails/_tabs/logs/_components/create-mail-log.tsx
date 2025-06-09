@@ -192,7 +192,7 @@ const CreateMailLog = ({ open, setOpen, refetch }: CreateMailLogProps) => {
                     <FormItem className="col-span-12">
                       <FormLabel>Recipient Email</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="example@example.com" />
+                        <Input {...field} placeholder="me@example.com" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -206,7 +206,7 @@ const CreateMailLog = ({ open, setOpen, refetch }: CreateMailLogProps) => {
                     <FormItem className="col-span-12">
                       <FormLabel>Sender Email</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="example@example.com" />
+                        <Input {...field} placeholder="me@example.com" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -220,10 +220,7 @@ const CreateMailLog = ({ open, setOpen, refetch }: CreateMailLogProps) => {
                     <FormItem className="col-span-12">
                       <FormLabel>CC</FormLabel>
                       <FormControl>
-                        <Input
-                          {...field}
-                          placeholder={`["example@example.com"]`}
-                        />
+                        <Input {...field} placeholder={`["me@example.com"]`} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -237,10 +234,7 @@ const CreateMailLog = ({ open, setOpen, refetch }: CreateMailLogProps) => {
                     <FormItem className="col-span-12">
                       <FormLabel>BCC</FormLabel>
                       <FormControl>
-                        <Input
-                          {...field}
-                          placeholder={`["example@example.com"]`}
-                        />
+                        <Input {...field} placeholder={`["me@example.com"]`} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

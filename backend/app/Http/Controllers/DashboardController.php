@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\PermissionHelper;
 use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
@@ -12,8 +13,18 @@ class DashboardController extends Controller {
     /**
      * Get statistics for the dashboard.
      */
-    public function getDashboardStatistics() {
+    public function getDashboardStatistics(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+                'message' => 'Access denied.'
+            ], 403);
+        }
+
         return response()->json([
+            'auth_user' => $authUser,
             'users' => User::count(),
             'deleted_users' => User::onlyTrashed()->count(),
             'admins' => User::where('is_admin', true)->count(),
@@ -25,6 +36,15 @@ class DashboardController extends Controller {
      * Get user registration statistics based on the specified grouping and mode.
      */
     public function getUserRegistrationStats(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+                'message' => 'Access denied.'
+            ], 403);
+        }
+
         $groupBy = $request->query('group_by', 'month');
         $startDate = $request->query('start_date');
         $endDate = $request->query('end_date');
@@ -148,7 +168,16 @@ class DashboardController extends Controller {
     /**
      * Get account type distribution for the dashboard.
      */
-    public function getDashboardAccountTypes() {
+    public function getDashboardAccountTypes(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         $records = User::select('account_type', DB::raw('count(*) as count'))
             ->groupBy('account_type')
             ->get();

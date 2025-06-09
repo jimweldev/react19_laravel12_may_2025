@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\UserHelper;
 use App\Models\User;
+use App\Models\UserLog;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -44,6 +45,12 @@ class AuthController extends Controller {
             'exp' => $refreshTokenExpiresAt->timestamp,
             'token_type' => 'refresh',
         ])->fromUser($user);
+
+        UserLog::create([
+            'user_id' => $user->id,
+            'message' => 'Logged in with email',
+            'ip_address' => $request->ip(),
+        ]);
 
         return response()->json([
             'user' => $user,
@@ -90,6 +97,12 @@ class AuthController extends Controller {
                 'exp' => $refreshTokenExpiresAt->timestamp,
                 'token_type' => 'refresh',
             ])->fromUser($user);
+
+            UserLog::create([
+                'user_id' => $user->id,
+                'message' => 'Logged in with Google',
+                'ip_address' => $request->ip(),
+            ]);
 
             return response()->json([
                 'user' => $user,

@@ -2,6 +2,7 @@ import { CgMenuGridO } from 'react-icons/cg';
 import { FaCode, FaHouse, FaUserGear } from 'react-icons/fa6';
 import { NavLink, useLocation } from 'react-router';
 import useAuthUserStore from '@/_stores/auth-user-store';
+import Tooltip from '@/components/tool-tips/tool-tip';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -61,11 +62,7 @@ const AppNavbarLinks = () => {
           <DropdownMenuContent className="w-50">
             {paths.map(path =>
               path.path === '/' ? (
-                <NavLink
-                  to="/"
-                  key={path.path}
-                  className="text-muted-foreground hover:text-foreground"
-                >
+                <NavLink to="/" key={path.path}>
                   {() => {
                     const active = !isExcluded;
                     return (
@@ -73,7 +70,7 @@ const AppNavbarLinks = () => {
                         className={`${
                           active
                             ? 'bg-primary text-primary-foreground focus:bg-primary focus:text-primary-foreground'
-                            : 'focus:bg-accent focus:text-accent-foreground'
+                            : ''
                         }`}
                       >
                         {path.icon}
@@ -83,17 +80,13 @@ const AppNavbarLinks = () => {
                   }}
                 </NavLink>
               ) : (
-                <NavLink
-                  to={path.path}
-                  key={path.path}
-                  className="text-muted-foreground hover:text-foreground"
-                >
+                <NavLink to={path.path} key={path.path}>
                   {({ isActive }) => (
                     <DropdownMenuItem
                       className={`${
                         isActive
                           ? 'bg-primary text-primary-foreground focus:bg-primary focus:text-primary-foreground'
-                          : 'focus:bg-accent focus:text-accent-foreground'
+                          : ''
                       }`}
                     >
                       {path.icon}
@@ -110,24 +103,28 @@ const AppNavbarLinks = () => {
       <div className="hidden gap-2 sm:flex">
         {paths.map(path =>
           path.path === '/' ? (
-            <NavLink to={path.path} className="" key={path.path}>
-              {() => {
-                const active = !isExcluded;
-                return (
-                  <Button variant={active ? 'default' : 'ghost'} size="icon">
+            <Tooltip content={path.label} key={path.path}>
+              <NavLink to={path.path}>
+                {() => {
+                  const active = !isExcluded;
+                  return (
+                    <Button variant={active ? 'default' : 'ghost'} size="icon">
+                      {path.icon}
+                    </Button>
+                  );
+                }}
+              </NavLink>
+            </Tooltip>
+          ) : (
+            <Tooltip content={path.label} key={path.path}>
+              <NavLink to={path.path}>
+                {({ isActive }) => (
+                  <Button variant={isActive ? 'default' : 'ghost'} size="icon">
                     {path.icon}
                   </Button>
-                );
-              }}
-            </NavLink>
-          ) : (
-            <NavLink to={path.path} className="" key={path.path}>
-              {({ isActive }) => (
-                <Button variant={isActive ? 'default' : 'ghost'} size="icon">
-                  {path.icon}
-                </Button>
-              )}
-            </NavLink>
+                )}
+              </NavLink>
+            </Tooltip>
           ),
         )}
       </div>

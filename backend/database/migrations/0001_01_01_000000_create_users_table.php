@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('middle_name')->nullable()->index();
             $table->string('last_name')->index();
             $table->string('suffix')->nullable()->index();
-            $table->string('avatar')->nullable();
+            $table->string('avatar_path')->nullable();
             $table->string('email')->unique();
             $table->string('password');
             $table->boolean('is_admin')->default(false);

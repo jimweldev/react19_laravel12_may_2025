@@ -12,6 +12,15 @@ class RbacRoleController extends Controller {
      * Display a listing of the records.
      */
     public function index(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         // Get all query parameters
         $queryParams = $request->all();
 
@@ -39,7 +48,16 @@ class RbacRoleController extends Controller {
     /**
      * Display the specified record.
      */
-    public function show($id) {
+    public function show(Request $request, $id) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         // Find the record by ID
         $record = RbacRole::where('id', $id);
 
@@ -68,6 +86,15 @@ class RbacRoleController extends Controller {
      * Store a newly created record in storage.
      */
     public function store(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             // Check if role already exists
             $roleExists = RbacRole::where('value', $request->input('value'))->exists();
@@ -100,6 +127,15 @@ class RbacRoleController extends Controller {
      * Update the specified record in storage.
      */
     public function update(Request $request, $id) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             // Find the role by ID
             $role = RbacRole::find($id);
@@ -136,7 +172,16 @@ class RbacRoleController extends Controller {
     /**
      * Remove the specified record from storage.
      */
-    public function destroy($id) {
+    public function destroy(Request $request, $id) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             // Find the role by ID
             $role = RbacRole::find($id);
@@ -166,6 +211,15 @@ class RbacRoleController extends Controller {
      * Display a paginated list of records with optional filtering and search.
      */
     public function paginate(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+        
         // Get all query parameters
         $queryParams = $request->all();
 

@@ -49,6 +49,10 @@ mainInstance.interceptors.response.use(
       }
     }
 
+    if (error.response?.status === 403) {
+      toast.error('You do not have permission to access this resource.');
+    }
+
     return Promise.reject(error);
   },
 );

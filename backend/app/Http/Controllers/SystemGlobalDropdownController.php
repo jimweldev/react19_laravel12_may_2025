@@ -11,6 +11,15 @@ class SystemGlobalDropdownController extends Controller {
      * Display a listing of the records.
      */
     public function index(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         // Get all query parameters
         $queryParams = $request->all();
 
@@ -38,7 +47,16 @@ class SystemGlobalDropdownController extends Controller {
     /**
      * Display the specified record.
      */
-    public function show($id) {
+    public function show(Request $request, $id) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         // Find the record by ID
         $record = SystemGlobalDropdown::where('id', $id)->first();
 
@@ -57,6 +75,15 @@ class SystemGlobalDropdownController extends Controller {
      * Store a newly created record in storage.
      */
     public function store(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             // Create a new record
             $record = SystemGlobalDropdown::create($request->all());
@@ -76,6 +103,15 @@ class SystemGlobalDropdownController extends Controller {
      * Update the specified record in storage.
      */
     public function update(Request $request, $id) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             // Find the record by ID
             $record = SystemGlobalDropdown::find($id);
@@ -104,7 +140,16 @@ class SystemGlobalDropdownController extends Controller {
     /**
      * Remove the specified record from storage.
      */
-    public function destroy($id) {
+    public function destroy(Request $request, $id) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             // Find the record by ID
             $record = SystemGlobalDropdown::find($id);
@@ -134,6 +179,15 @@ class SystemGlobalDropdownController extends Controller {
      * Display a paginated list of records with optional filtering and search.
      */
     public function paginate(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+        
         // Get all query parameters
         $queryParams = $request->all();
 

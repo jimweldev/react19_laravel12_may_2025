@@ -9,11 +9,12 @@ return new class extends Migration {
      * Run the migrations.
      */
     public function up(): void {
-        Schema::create('mail_log_attachments', function (Blueprint $table) {
+        Schema::create('galleries', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('mail_log_id')->constrained()->onDelete('cascade');
-            $table->string('file_name');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('file_name')->index();
             $table->string('file_path');
+            $table->boolean('is_pinned')->default(false);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
@@ -23,6 +24,6 @@ return new class extends Migration {
      * Reverse the migrations.
      */
     public function down(): void {
-        Schema::dropIfExists('mail_log_attachments');
+        Schema::dropIfExists('galleries');
     }
 };

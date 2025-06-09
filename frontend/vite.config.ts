@@ -53,7 +53,7 @@ export default defineConfig(({ mode }) => {
           ],
         },
         devOptions: {
-          enabled: false,
+          enabled: env.VITE_ENV !== 'production',
         },
       }),
     ],

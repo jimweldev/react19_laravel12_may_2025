@@ -3,18 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\QueryHelper;
+use App\Helpers\StorageHelper;
 use App\Helpers\UserHelper;
 use App\Models\User;
 use App\Models\UserSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class UserController extends Controller {
     /**
      * Display a listing of users based on filters.
      */
     public function index(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         $queryParams = $request->all();
 
         try {
@@ -57,6 +67,15 @@ class UserController extends Controller {
      * Store a newly created user in storage.
      */
     public function store(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             $userExists = User::where('email', $request->input('email'))->exists();
 
@@ -82,6 +101,15 @@ class UserController extends Controller {
      * Update the specified user by ID.
      */
     public function update(Request $request, $id) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             $user = User::find($id);
 
@@ -107,6 +135,13 @@ class UserController extends Controller {
      */
     public function destroy(Request $request, $id) {
         $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
 
         try {
             $user = User::find($id);
@@ -138,6 +173,15 @@ class UserController extends Controller {
      * Paginate users with filtering, relations and search.
      */
     public function paginate(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         $queryParams = $request->all();
 
         try {
@@ -206,6 +250,15 @@ class UserController extends Controller {
      * Import a list of users from a dataset.
      */
     public function import(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             $info = ['new' => 0, 'skipped' => 0];
             $data = $request->input('data');
@@ -247,7 +300,16 @@ class UserController extends Controller {
     /**
      * Retrieve an archived (soft-deleted) user.
      */
-    public function getArchivedUser($id) {
+    public function getArchivedUser(Request $request, $id) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         $record = User::onlyTrashed()->find($id);
 
         return response()->json($record, 200);
@@ -256,7 +318,16 @@ class UserController extends Controller {
     /**
      * Restore a soft-deleted user.
      */
-    public function restoreArchivedUser($id) {
+    public function restoreArchivedUser(Request $request, $id) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             $record = User::onlyTrashed()->find($id);
 
@@ -279,6 +350,15 @@ class UserController extends Controller {
      * Paginate through archived users.
      */
     public function getAllArchivedUsersPaginate(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         $queryParams = $request->all();
 
         try {
@@ -319,7 +399,16 @@ class UserController extends Controller {
     /**
      * Get user roles by user ID.
      */
-    public function getUserRoles($id) {
+    public function getUserRoles(Request $request, $id) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         $record = User::where('id', $id)
             ->with(['rbac_user_roles' => function ($query) {
                 $query->select('id', 'user_id', 'rbac_role_id')
@@ -340,6 +429,15 @@ class UserController extends Controller {
      * Update roles for a user.
      */
     public function updateUserRoles(Request $request, $id) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+        
         try {
             $user = User::find($id);
 
@@ -380,18 +478,12 @@ class UserController extends Controller {
                 return response()->json(['message' => 'New passwords do not match.'], 400);
             }
 
-            $user = User::find($authUser->id);
-
-            if (!$user) {
-                return response()->json(['message' => 'User not found.'], 404);
-            }
-
-            if (!Hash::check($currentPassword, $user->password)) {
+            if (!Hash::check($currentPassword, $authUser->password)) {
                 return response()->json(['message' => 'Current password is incorrect.'], 400);
             }
 
-            $user->password = Hash::make($newPassword);
-            $user->save();
+            $authUser->password = Hash::make($newPassword);
+            $authUser->save();
 
             return response()->json(['message' => 'Password changed successfully.'], 200);
         } catch (\Exception $e) {
@@ -406,15 +498,10 @@ class UserController extends Controller {
         $authUser = $request->user();
 
         try {
-            $user = User::find($authUser->id);
-            if (!$user) {
-                return response()->json(['message' => 'User not found'], 404);
-            }
+            $authUser->update($request->all());
+            $authUser = UserHelper::getUser($authUser->email);
 
-            $user->update($request->all());
-            $user = UserHelper::getUser($user->email);
-
-            return response()->json($user);
+            return response()->json($authUser);
         } catch (\Exception $e) {
             return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 400);
         }
@@ -426,45 +513,37 @@ class UserController extends Controller {
     public function updateProfileAvatar(Request $request) {
         $authUser = $request->user();
 
+        $avatarData = $request->input('avatar_path');
+
+        if (!$avatarData) {
+            return response()->json(['message' => 'No avatar data provided'], 400);
+        }
+
+        $parsedData = $this->parseBase64Avatar($avatarData);
+
+        if (!$parsedData) {
+            return response()->json(['message' => 'Invalid avatar format or failed to decode'], 400);
+        }
+
+        [$mimeType, $extension, $avatarContent] = $parsedData;
+
         try {
-            $user = User::find($authUser->id);
-            if (!$user) {
-                return response()->json(['message' => 'User not found'], 404);
+            $uploadedFile = $this->createUploadedFileFromContent($avatarContent, $mimeType, $extension);
+            $filePath = StorageHelper::uploadFileAs($uploadedFile, 'avatars', $extension);
+
+            if ($authUser->avatar_path) {
+                StorageHelper::deleteFile($authUser->avatar_path);
             }
 
-            $avatarData = $request->input('avatar');
-            if (!$avatarData) {
-                return response()->json(['message' => 'No avatar data provided'], 400);
-            }
+            $authUser->avatar_path = $filePath;
+            $authUser->save();
 
-            $data = explode(';base64,', $avatarData);
-            if (count($data) !== 2) {
-                return response()->json(['message' => 'Invalid avatar format'], 400);
-            }
-
-            $imageExt = explode('/', mime_content_type($avatarData))[1];
-            $avatarContent = base64_decode($data[1]);
-
-            if (!$avatarContent) {
-                return response()->json(['message' => 'Failed to decode avatar'], 400);
-            }
-
-            $avatarName = uniqid().'.'.$imageExt;
-            Storage::disk('public')->put('avatars/'.$avatarName, $avatarContent);
-
-            if ($user->avatar) {
-                Storage::disk('public')->delete('avatars/'.$user->avatar);
-            }
-
-            $user->avatar = $avatarName;
-            $user->save();
-
-            return response()->json([
-                'avatar' => $avatarName,
-                'message' => 'Avatar updated successfully!',
-            ]);
+            return response()->json($authUser, 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 400);
+            return response()->json([
+                'message' => 'An error occurred.',
+                'error' => $e->getMessage(),
+            ], 400);
         }
     }
 
@@ -481,11 +560,51 @@ class UserController extends Controller {
             );
 
             $userSetting->update($request->all());
-            $user = UserHelper::getUser($authUser->email);
+            $authUser = UserHelper::getUser($authUser->email);
 
-            return response()->json($user);
+            return response()->json($authUser);
         } catch (\Exception $e) {
             return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 400);
         }
+    }
+
+    // ===================================================================
+    // ===================================================================
+    // === FUNCTIONS
+    // ===================================================================
+    // ===================================================================
+
+    // ==============
+    // === AVATAR
+    // parse base64 avatar
+    private function parseBase64Avatar(string $avatarData) {
+        $data = explode(';base64,', $avatarData);
+        if (count($data) !== 2) {
+            return null;
+        }
+
+        $mimeType = explode(':', $data[0])[1] ?? null;
+        $extension = explode('/', $mimeType)[1] ?? null;
+        $content = base64_decode($data[1]);
+
+        if (!$mimeType || !$extension || !$content) {
+            return null;
+        }
+
+        return [$mimeType, $extension, $content];
+    }
+
+    // create uploaded file from content
+    private function createUploadedFileFromContent(string $content, string $mimeType, string $extension) {
+        $tempFilePath = sys_get_temp_dir().'/'.Str::uuid().'.'.$extension;
+        file_put_contents($tempFilePath, $content);
+
+        return new \Illuminate\Http\UploadedFile(
+            $tempFilePath,
+            basename($tempFilePath),
+            $mimeType,
+            null,
+            true
+        );
     }
 }

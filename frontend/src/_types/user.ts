@@ -7,7 +7,7 @@ export type User = {
   middle_name?: string;
   last_name?: string;
   suffix?: string;
-  avatar?: string;
+  avatar_path?: string;
   email?: string;
   is_admin?: boolean;
   account_type?: string;

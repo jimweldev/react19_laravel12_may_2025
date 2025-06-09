@@ -26,7 +26,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import ReactQuillMyDrive from './react-quill-my-drive';
+import ReactQuillMyGallery from './react-quill-my-gallery/react-quill-my-gallery';
 
 const FormSchema = z.object({
   img_url: z
@@ -75,6 +75,11 @@ const ReactQuillInsertImage = ({
 
   const [openMyDrive, setOpenMyDrive] = useState<boolean>(false);
 
+  const onSelectImage = (url: string) => {
+    form.setValue('img_url', url);
+    setOpenMyDrive(false);
+  };
+
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -116,7 +121,7 @@ const ReactQuillInsertImage = ({
                               {...field}
                               placeholder="https://www.example.com/image.jpg"
                             />
-                            <ToolTip content="Choose from My Drive">
+                            <ToolTip content="Choose from my Gallery">
                               <Button onClick={() => setOpenMyDrive(true)}>
                                 <FaImages />
                               </Button>
@@ -134,7 +139,7 @@ const ReactQuillInsertImage = ({
                       <FormItem className="col-span-12">
                         <FormLabel>Width</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="e.g. 100%" />
+                          <Input {...field} placeholder="e.g. 100%, 200px" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -153,7 +158,11 @@ const ReactQuillInsertImage = ({
         </DialogContent>
       </Dialog>
 
-      <ReactQuillMyDrive open={openMyDrive} setOpen={setOpenMyDrive} />
+      <ReactQuillMyGallery
+        open={openMyDrive}
+        setOpen={setOpenMyDrive}
+        onSelectImage={onSelectImage}
+      />
     </>
   );
 };

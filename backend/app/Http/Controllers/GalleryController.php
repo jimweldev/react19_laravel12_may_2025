@@ -3,35 +3,31 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\QueryHelper;
-use App\Models\RbacPermission;
+use App\Helpers\StorageHelper;
+use App\Models\Gallery;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
-class RbacPermissionController extends Controller {
+class GalleryController extends Controller {
     /**
      * Display a listing of the records.
      */
     public function index(Request $request) {
-        $authUser = $request->user();
-
-        // check if user is an admin
-        if (!$authUser->is_admin) {
-            return response()->json([
-               'message' => 'Access denied.'
-            ], 403);
-        }
-
         // Get all query parameters
         $queryParams = $request->all();
 
         try {
             // Initialize the query builder
-            $query = RbacPermission::query();
+            $query = Gallery::query();
 
             // Apply query parameters
             QueryHelper::apply($query, $queryParams);
 
             // Execute the query and get the records
             $records = $query->get();
+
+            // Return the records
+            return response()->json($records, 200);
         } catch (\Exception $e) {
             // Handle exceptions and return an error response
             return response()->json([
@@ -39,26 +35,14 @@ class RbacPermissionController extends Controller {
                 'error' => $e->getMessage(),
             ], 400);
         }
-
-        // Return the records
-        return response()->json($records, 200);
     }
 
     /**
      * Display the specified record.
      */
-    public function show(Request $request, $id) {
-        $authUser = $request->user();
-
-        // check if user is an admin
-        if (!$authUser->is_admin) {
-            return response()->json([
-               'message' => 'Access denied.'
-            ], 403);
-        }
-
+    public function show($id) {
         // Find the record by ID
-        $record = RbacPermission::where('id', $id)
+        $record = Gallery::where('id', $id)
             ->first();
 
         if (!$record) {
@@ -78,31 +62,28 @@ class RbacPermissionController extends Controller {
     public function store(Request $request) {
         $authUser = $request->user();
 
-        // check if user is an admin
-        if (!$authUser->is_admin) {
-            return response()->json([
-               'message' => 'Access denied.'
-            ], 403);
-        }
-
         try {
-            // Check if the role already exists
-            $roleExists = RbacPermission::where('value', $request->input('value'))->exists();
+            // Handle the file upload
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $extension = $file->getClientOriginalExtension();
+                $uniqueName = Str::uuid().'.'.$extension;
 
-            if ($roleExists) {
-                // Return a 400 response if the role already exists
-                return response()->json([
-                    'message' => 'Rbac Role already exists.',
-                ], 400);
+                $filePath = StorageHelper::uploadFileAs($file, 'galleries', $uniqueName);
+
+                // Create a new record in the database
+                $record = Gallery::create([
+                    'user_id' => $authUser->id,
+                    'file_name' => $request->input('file_name'),
+                    'file_url' => $filePath,
+                ]);
+
+                // Return the created record
+                return response()->json($record, 201);
+            } else {
+                return response()->json(['message' => 'Image upload failed.'], 400);
             }
-
-            // Create a new record
-            $record = RbacPermission::create($request->all());
-
-            // Return the created record
-            return response()->json($record, 201);
         } catch (\Exception $e) {
-            // Handle exceptions and return an error response
             return response()->json([
                 'message' => 'An error occurred.',
                 'error' => $e->getMessage(),
@@ -114,31 +95,22 @@ class RbacPermissionController extends Controller {
      * Update the specified record in storage.
      */
     public function update(Request $request, $id) {
-        $authUser = $request->user();
-
-        // check if user is an admin
-        if (!$authUser->is_admin) {
-            return response()->json([
-               'message' => 'Access denied.'
-            ], 403);
-        }
-
         try {
-            // Find the role by ID
-            $role = RbacPermission::find($id);
+            // Find the record by ID
+            $record = Gallery::find($id);
 
-            if (!$role) {
-                // Return a 404 response if the role is not found
+            if (!$record) {
+                // Return a 404 response if the record is not found
                 return response()->json([
-                    'message' => 'Role not found.',
+                    'message' => 'Record not found.',
                 ], 404);
             }
 
-            // Update the role
-            $role->update($request->all());
+            // Update the record
+            $record->update($request->all());
 
-            // Return the updated role
-            return response()->json($role);
+            // Return the updated record
+            return response()->json($record, 200);
         } catch (\Exception $e) {
             // Handle exceptions and return an error response
             return response()->json([
@@ -154,29 +126,26 @@ class RbacPermissionController extends Controller {
     public function destroy(Request $request, $id) {
         $authUser = $request->user();
 
-        // check if user is an admin
-        if (!$authUser->is_admin) {
-            return response()->json([
-               'message' => 'Access denied.'
-            ], 403);
-        }
-
         try {
-            // Find the role by ID
-            $role = RbacPermission::find($id);
+            // Find the record by ID
+            $record = Gallery::where('id', $id)
+                ->where('user_id', $authUser->id)
+                ->first();
 
-            if (!$role) {
-                // Return a 404 response if the role is not found
+            if (!$record) {
+                // Return a 404 response if the record is not found
                 return response()->json([
-                    'message' => 'Role not found.',
+                    'message' => 'Record not found.',
                 ], 404);
             }
 
-            // Delete the role
-            $role->delete();
+            StorageHelper::deleteFile($record->file_url);
 
-            // Return the deleted role
-            return response()->json($role, 200);
+            // Delete the record
+            $record->delete();
+
+            // Return the deleted record
+            return response()->json($record, 200);
         } catch (\Exception $e) {
             // Handle exceptions and return an error response
             return response()->json([
@@ -192,19 +161,12 @@ class RbacPermissionController extends Controller {
     public function paginate(Request $request) {
         $authUser = $request->user();
 
-        // check if user is an admin
-        if (!$authUser->is_admin) {
-            return response()->json([
-               'message' => 'Access denied.'
-            ], 403);
-        }
-        
-        // Get all query parameters
         $queryParams = $request->all();
 
         try {
             // Initialize the query builder
-            $query = RbacPermission::query();
+            $query = Gallery::where('user_id', $authUser->id)
+                ->orderBy('is_pinned', 'desc');
 
             // Define the default query type
             $type = 'paginate';
@@ -216,8 +178,8 @@ class RbacPermissionController extends Controller {
                 $search = $request->input('search');
                 // Apply search conditions to the query
                 $query->where(function ($query) use ($search) {
-                    $query->where('label', 'LIKE', '%'.$search.'%')
-                        ->orWhere('value', 'LIKE', '%'.$search.'%');
+                    $query->where('id', 'LIKE', '%'.$search.'%')
+                        ->orWhere('file_name', 'LIKE', '%'.$search.'%');
                 });
             }
 
@@ -235,12 +197,13 @@ class RbacPermissionController extends Controller {
 
             // Return the records and pagination info
             return response()->json([
+                'user' => $authUser,
                 'records' => $records,
                 'info' => [
                     'total' => $total,
                     'pages' => ceil($total / $limit),
                 ],
-            ]);
+            ], 200);
         } catch (\Exception $e) {
             // Handle exceptions and return an error response
             return response()->json([

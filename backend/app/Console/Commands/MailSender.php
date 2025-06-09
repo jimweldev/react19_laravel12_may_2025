@@ -34,9 +34,11 @@ class MailSender extends Command {
      * @return void
      */
     public function handle() {
+        $storageBaseUrl = env('STORAGE_BASE_URL');
+
         // Fetch all unsent mail logs along with related templates and attachments
         $mailLogs = MailLog::where('is_sent', false)
-            ->with(['mail_template:id,content', 'mail_log_attachments:mail_log_id,file_url'])
+            ->with(['mail_template:id,content', 'mail_log_attachments:mail_log_id,file_name,file_path'])
             ->get();
 
         // Loop through each pending mail log
@@ -58,7 +60,7 @@ class MailSender extends Command {
             $bcc = json_decode($mailLog->bcc, true) ?? [];
 
             // Send the email using Laravel's Mail facade
-            Mail::html($content, function ($message) use ($mailLog, $cc, $bcc) {
+            Mail::html($content, function ($message) use ($mailLog, $cc, $bcc, $storageBaseUrl) {
                 // Set the recipient and subject
                 $message->to($mailLog->recipient_email, $mailLog->recipient)
                     ->subject($mailLog->subject);
@@ -73,34 +75,31 @@ class MailSender extends Command {
                     $message->bcc($email);
                 }
 
-                // Log the number of attachments for diagnostics
-                Log::info('Attachment count: '.count($mailLog->mail_log_attachments));
-
                 // Loop through and attach each file
                 foreach ($mailLog->mail_log_attachments as $attachment) {
                     try {
                         // Get the file content from the stored URL
-                        $fileContent = file_get_contents($attachment->file_url);
+                        $fileContent = file_get_contents($storageBaseUrl.'/'.$attachment->file_path);
 
                         if ($fileContent !== false) {
                             // Attach file data with original filename
-                            $message->attachData($fileContent, $attachment->file_name ?? basename($attachment->file_url));
+                            $message->attachData($fileContent, $attachment->file_name ?? basename($storageBaseUrl.'/'.$attachment->file_path));
 
                             // Free memory used by the file content
                             unset($fileContent);
                             gc_collect_cycles();
                         } else {
-                            Log::warning("Unable to read file from: {$attachment->file_url}");
+                            Log::warning("Unable to read file from: {$storageBaseUrl}/{$attachment->file_path}");
                         }
                     } catch (\Exception $e) {
                         // Log any exceptions during attachment handling
-                        Log::error("Attachment error [{$attachment->file_url}]: ".$e->getMessage());
+                        Log::error("Attachment error [{$storageBaseUrl}/{$attachment->file_path}]: ".$e->getMessage());
                     }
                 }
             });
 
             // Mark the mail log as sent
-            // $mailLog->update(['is_sent' => true]);
+            $mailLog->update(['is_sent' => true]);
         }
     }
 }

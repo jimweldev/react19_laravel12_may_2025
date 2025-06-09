@@ -45,7 +45,7 @@ const UploadAvatar = ({ open, setOpen }: UploadAvatarProps) => {
 
     const formData = new FormData();
     const resizedImage = await resizeImage(croppedImage, 128, 128);
-    formData.append('avatar', resizedImage);
+    formData.append('avatar_path', resizedImage);
 
     toast.promise(
       mainInstance.post(`/api/settings/profile/avatar`, formData, {
@@ -54,7 +54,7 @@ const UploadAvatar = ({ open, setOpen }: UploadAvatarProps) => {
       {
         loading: 'Loading...',
         success: response => {
-          setUser({ ...user!, avatar: response.data.avatar });
+          setUser({ ...user!, avatar_path: response.data.avatar_path });
           return 'Success!';
         },
         error: error => {

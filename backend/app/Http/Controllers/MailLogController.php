@@ -11,6 +11,15 @@ class MailLogController extends Controller {
      * Display a listing of the records.
      */
     public function index(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         // Get all query parameters
         $queryParams = $request->all();
 
@@ -38,13 +47,22 @@ class MailLogController extends Controller {
     /**
      * Display the specified record.
      */
-    public function show($id) {
+    public function show(Request $request, $id) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         // Find the record by ID
         $record = MailLog::where('id', $id)
             ->with(
                 'user:id,first_name,middle_name,last_name,suffix',
                 'mail_template:id,content',
-                'mail_log_attachments:mail_log_id,file_name,file_type,file_url'
+                'mail_log_attachments:id,mail_log_id,file_name,file_type,file_url'
             )
             ->first();
 
@@ -63,6 +81,15 @@ class MailLogController extends Controller {
      * Store a newly created record in storage.
      */
     public function store(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             // create a new record
             $record = MailLog::create($request->all());
@@ -82,6 +109,15 @@ class MailLogController extends Controller {
      * Update the specified record in storage.
      */
     public function update(Request $request, $id) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             // Find the record by ID
             $record = MailLog::find($id);
@@ -110,7 +146,16 @@ class MailLogController extends Controller {
     /**
      * Remove the specified record from storage.
      */
-    public function destroy($id) {
+    public function destroy(Request $request, $id) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+
         try {
             // Find the record by ID
             $record = MailLog::find($id);
@@ -140,6 +185,15 @@ class MailLogController extends Controller {
      * Display a paginated list of records with optional filtering and search.
      */
     public function paginate(Request $request) {
+        $authUser = $request->user();
+
+        // check if user is an admin
+        if (!$authUser->is_admin) {
+            return response()->json([
+               'message' => 'Access denied.'
+            ], 403);
+        }
+        
         $queryParams = $request->all();
 
         try {

@@ -66,7 +66,7 @@ const ProfileToolTip = ({
                   <ReactImage
                     className="pointer-events-none h-full w-full object-cover"
                     src={getImageUrl(
-                      `${import.meta.env.VITE_STORAGE_BASE_URL}/avatars`,
+                      `${import.meta.env.VITE_STORAGE_BASE_URL}/`,
                       user?.avatar,
                       fallbackImage,
                     )}

@@ -58,12 +58,12 @@ const ArchivedUsersTab = () => {
                     <div className="flex items-center gap-2">
                       <a
                         data-fancybox={`${user.id}`}
-                        href={`${user?.avatar ? `${import.meta.env.VITE_STORAGE_BASE_URL}/avatars/${user.avatar}` : fallbackImage}`}
+                        href={`${user?.avatar_path ? `${import.meta.env.VITE_STORAGE_BASE_URL}/${user.avatar_path}` : fallbackImage}`}
                       >
                         <div className="outline-primary border-card flex aspect-square h-8 cursor-pointer items-center overflow-hidden rounded-full border-1 outline-2 select-none">
                           <ReactImage
                             className="pointer-events-none h-full w-full object-cover"
-                            src={`${user?.avatar ? `${import.meta.env.VITE_STORAGE_BASE_URL}/avatars/${user.avatar}` : fallbackImage}`}
+                            src={`${user?.avatar_path ? `${import.meta.env.VITE_STORAGE_BASE_URL}/${user.avatar_path}` : fallbackImage}`}
                             unloaderSrc={fallbackImage}
                           />
                         </div>
